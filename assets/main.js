@@ -24,13 +24,10 @@ document.querySelectorAll('[data-insta]').forEach((a) => {
 });
 
 // Vagas do mês corrente
-const mes = new Date().toLocaleString('pt-BR', { month: 'long' });
 if (CONFIG.vagasPorMes > 0) {
+  const mes = new Date().toLocaleString('pt-BR', { month: 'long' });
   document.querySelectorAll('[data-vagas]').forEach((el) => {
-    el.textContent = `Oferta · ${CONFIG.vagasPorMes} vagas em ${mes}`;
-  });
-  document.querySelectorAll('[data-vagas-texto]').forEach((el) => {
-    el.textContent = `${CONFIG.vagasPorMes} páginas grátis em ${mes}. Quando fecharem, seu pedido vai para o mês seguinte.`;
+    el.textContent = `${CONFIG.vagasPorMes} vagas em ${mes}`;
   });
 }
 
@@ -45,8 +42,6 @@ const validadores = {
   nome: (v) => v.trim().length >= 2,
   whatsapp: (v) => v.replace(/\D/g, '').length >= 10,
   negocio: (v) => v.trim().length >= 2,
-  segmento: (v) => v !== '',
-  anuncios: (v) => v !== '',
 };
 
 function campoDe(nome) {
@@ -90,8 +85,6 @@ form.addEventListener('submit', (e) => {
     `WhatsApp: ${d.get('whatsapp').trim()}`,
     `Negócio: ${d.get('negocio').trim()}`,
     insta ? `Instagram: ${insta}` : null,
-    `Segmento: ${d.get('segmento')}`,
-    `Já faço anúncios: ${d.get('anuncios')}`,
   ].filter((l) => l !== null);
 
   const url = linkWhats(linhas.join('\n'));

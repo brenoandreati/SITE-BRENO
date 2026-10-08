@@ -9,10 +9,13 @@ Página de captação: oferece uma landing page grátis e envia o pedido direto 
    - `whatsapp`: DDI + DDD + número, só dígitos (ex.: `5511912345678`).
    - `instagram`: seu @ sem a arroba.
    - `vagasPorMes`: quantas páginas você abre por mês (use `0` para esconder o número).
-2. **Exemplos**: troque os três blocos tracejados da seção `#exemplos` em `index.html` por
-   `<img src="assets/exemplos/cliente.jpg" alt="Página do cliente X">`, com prints de 1200 × 800.
-   Preencha o nome do cliente e o segmento na legenda.
-3. **Textos**: a copy está toda em `index.html`. Revise principalmente “Por que de graça?” e o FAQ.
+2. **Textos**: a copy está toda em `index.html`. Revise principalmente “Por que de graça” e as dúvidas.
+
+## Identidade
+
+- Cores tiradas da logo: fundo `#02081C`, branco `#F1F2F6`, azul `#0040FF` (sombra `#001CA6`).
+- Logo em vetor: `assets/logo.svg`; ícone da aba: `assets/favicon.svg`.
+- Fontes: Archivo (títulos em caixa-alta e texto) e Newsreader itálico (destaques em azul).
 
 ## Ver no computador
 

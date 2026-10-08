@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="360 392 580 446" role="img" aria-label="Breno Andreati">
+  <defs>
+    <linearGradient id="lg-branco" gradientUnits="userSpaceOnUse" x1="598" y1="403" x2="520" y2="791">
+      <stop offset="0" stop-color="#FBFBFD"/><stop offset="1" stop-color="#ECEEF3"/>
+    </linearGradient>
+    <linearGradient id="lg-sombra" gradientUnits="userSpaceOnUse" x1="785" y1="735" x2="880" y2="640">
+      <stop offset="0" stop-color="#0018A0"/><stop offset=".55" stop-color="#0038F2"/><stop offset="1" stop-color="#0048FF"/>
+    </linearGradient>
+    <linearGradient id="lg-faixa" gradientUnits="userSpaceOnUse" x1="640" y1="558" x2="770" y2="827">
+      <stop offset="0" stop-color="#003CFA"/><stop offset="1" stop-color="#0022CB"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#lg-branco)" d="M598.5 403 670 523.5h-68L487 720h136l41 71H371z"/>
+  <path fill="url(#lg-sombra)" d="M846 558h82L764.5 827 765 692z"/>
+  <path fill="url(#lg-faixa)" d="M602 558h82l121 202-40.5 67z"/>
+</svg>

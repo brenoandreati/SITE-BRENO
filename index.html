@@ -3,347 +3,223 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Landing page grátis · Breno Andreati</title>
-  <meta name="description" content="Eu desenho, escrevo e coloco no ar uma landing page para o seu negócio, com botão de WhatsApp e pronta para anúncios. Você não paga nada por ela.">
-  <meta name="theme-color" content="#2233E0">
+  <title>Landing page de graça · Breno Andreati</title>
+  <meta name="description" content="Eu escrevo, desenho e coloco no ar uma landing page para o seu negócio, com botão de WhatsApp e pronta para anúncios. Você não paga nada por ela.">
+  <meta name="theme-color" content="#02081C">
 
   <meta property="og:type" content="website">
   <meta property="og:locale" content="pt_BR">
-  <meta property="og:title" content="Sua landing page pronta. De graça.">
-  <meta property="og:description" content="Página de vendas com botão de WhatsApp, versão de celular e pixel instalado. Sem cartão, sem contrato.">
+  <meta property="og:title" content="Landing page de graça pro seu negócio">
+  <meta property="og:description" content="Página com botão de WhatsApp, versão de celular e pixel instalado. Sem cartão, sem contrato.">
 
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232233E0'/%3E%3Crect x='7' y='8' width='18' height='4' rx='1' fill='%23FFE14D'/%3E%3Crect x='7' y='15' width='12' height='3' rx='1' fill='%23fff'/%3E%3Crect x='7' y='21' width='9' height='4' rx='2' fill='%23fff'/%3E%3C/svg%3E">
-
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..900&family=Newsreader:ital,opsz,wght@1,6..72,400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
   <a class="skip" href="#conteudo">Pular para o conteúdo</a>
 
-  <header class="topo">
-    <div class="wrap topo__in">
-      <a class="marca" href="#">
-        <span class="marca__nome">Breno Andreati</span>
-        <span class="marca__tag">landing pages + tráfego</span>
-      </a>
-      <a class="btn btn--sm" href="#formulario">Quero a minha</a>
-    </div>
+  <header class="wrap topo">
+    <a class="marca" href="#" aria-label="Breno Andreati, início">
+      <img class="marca__logo" src="assets/logo.svg" alt="" width="34" height="26">
+      <span class="marca__nome">Breno <em>Andreati</em></span>
+    </a>
+    <a class="topo__cta" href="#pedido">Quero a minha <span aria-hidden="true">↘</span></a>
   </header>
 
   <main id="conteudo">
 
     <!-- HERO -->
-    <section class="hero">
-      <div class="wrap hero__in">
-        <div class="hero__texto">
-          <p class="rotulo rotulo--claro" data-vagas>Oferta · vagas abertas</p>
-          <h1 class="hero__titulo">Sua landing page pronta. <mark>De graça.</mark></h1>
-          <p class="hero__sub">Eu desenho, escrevo e coloco no ar uma página de vendas para o seu negócio, com botão de WhatsApp, versão de celular e tudo pronto para receber anúncio. Você não paga nada por ela.</p>
-          <div class="hero__acoes">
-            <a class="btn" href="#formulario">Quero minha página grátis</a>
-            <a class="link-claro" href="#como-funciona">Ver como funciona</a>
+    <section class="wrap hero">
+      <div class="hero__texto">
+        <p class="rotulo entra" style="--d:0">Para quem vende pelo WhatsApp</p>
+        <h1 class="hero__titulo entra" style="--d:1">
+          <span class="caixa">Landing page</span>
+          <span class="caixa">de graça</span>
+          <em>pro seu negócio.</em>
+        </h1>
+        <p class="hero__sub entra" style="--d:2">Seu negócio merece mais que um link na bio.</p>
+        <p class="hero__corpo entra" style="--d:2">Eu escrevo, desenho e coloco no ar uma página com a sua cara, com botão de WhatsApp e pronta para anúncio. Você não paga nada por ela.</p>
+        <a class="btn entra" style="--d:3" href="#pedido">Quero a minha <span aria-hidden="true">↓</span></a>
+        <div class="autor entra" style="--d:4">
+          <span class="autor__foto"><img src="assets/logo.svg" alt="" width="26" height="20"></span>
+          <p>Página feita por<br><strong>Breno Andreati</strong></p>
+        </div>
+      </div>
+
+      <div class="hero__lado">
+        <div class="vitrine entra" style="--d:2" aria-hidden="true">
+          <div class="vitrine__barra">
+            <span class="vitrine__pontos"><i></i><i></i><i></i></span>
+            <span>suapagina.com.br</span>
+            <span>↗</span>
           </div>
-          <p class="hero__nota">Sem cartão, sem contrato. A página fica com você.</p>
-        </div>
-
-        <!-- Assinatura: a página se monta do wireframe ao pronto -->
-        <div class="maquete" aria-hidden="true">
-          <div class="navegador">
-            <div class="navegador__barra">
-              <span></span><span></span><span></span>
-              <div class="navegador__url">suapagina.com.br</div>
-            </div>
-            <div class="pg">
-              <div class="blk pg__nav" style="--i:0">
-                <b>Ateliê Doce Ponto</b>
-                <i>Pedir</i>
+          <div class="vitrine__tela">
+            <div class="mini">
+              <div class="mini__topo">
+                <span class="mini__marca">Seu <em>negócio</em></span>
+                <span class="mini__link">Falar no WhatsApp</span>
               </div>
-              <div class="blk pg__titulo" style="--i:1">Bolos sob encomenda, entregues no dia da festa.<span class="nota">título com a oferta</span></div>
-              <div class="blk pg__texto" style="--i:2">Massa feita na hora, recheio escolhido por você. Atendemos Campinas e região.</div>
-              <div class="blk pg__cta" style="--i:3">
-                <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2c0 1.3 1 2.6 1.1 2.8.1.2 1.9 2.9 4.6 4 1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2l-.3-.2Z"/></svg>
-                Pedir no WhatsApp
-                <span class="nota nota--lado">abre o WhatsApp</span>
-              </div>
-              <div class="blk pg__img" style="--i:4">
-                <svg viewBox="0 0 120 60" preserveAspectRatio="xMidYMax meet"><rect x="34" y="34" width="52" height="22" rx="3" fill="#F6B8C6"/><rect x="40" y="18" width="40" height="18" rx="3" fill="#FAD3DC"/><rect x="58" y="6" width="3" height="12" fill="#FFE14D"/><ellipse cx="59.5" cy="5" rx="2.4" ry="3.2" fill="#FF9A3C"/><rect x="20" y="55" width="80" height="3" rx="1.5" fill="#E9D7C9"/></svg>
-              </div>
-              <div class="pg__provas">
-                <span class="nota" style="--i:5">prova social</span>
-                <div class="blk" style="--i:5"><strong>4,9 ★</strong>no Google</div>
-                <div class="blk" style="--i:5.4"><strong>+800</strong>festas</div>
-                <div class="blk" style="--i:5.8"><strong>24h</strong>de antecedência</div>
+              <div class="mini__corpo">
+                <div>
+                  <p class="mini__rotulo">Landing page · 2026</p>
+                  <p class="mini__titulo"><span class="caixa">Seu negócio</span><em>em uma página.</em></p>
+                  <p class="mini__por">Por Breno Andreati</p>
+                  <span class="mini__btn">Pedir no WhatsApp ↓</span>
+                </div>
+                <div class="celular">
+                  <span class="celular__rotulo">Versão de celular</span>
+                  <p class="celular__titulo"><span class="caixa">Seu negócio</span><em>em uma página.</em></p>
+                  <span class="celular__linha"></span>
+                  <span class="celular__linha celular__linha--curta"></span>
+                  <span class="celular__btn">WhatsApp</span>
+                  <span class="celular__img"></span>
+                </div>
               </div>
             </div>
           </div>
+          <div class="vitrine__rodape">
+            <p>Esta é a estrutura.</p>
+            <p class="vitrine__frase">A próxima página pode ser a sua. ↗</p>
+          </div>
         </div>
-      </div>
-    </section>
-
-    <!-- PROBLEMA -->
-    <section class="secao">
-      <div class="wrap duas">
-        <div>
-          <p class="rotulo">O problema</p>
-          <h2 class="titulo">Quem te encontra no Instagram precisa adivinhar o próximo passo.</h2>
-        </div>
-        <div>
-          <ul class="dores">
-            <li>O link da bio abre uma lista de botões, e o cliente não sabe qual apertar.</li>
-            <li>Preço, serviço e forma de pagamento estão espalhados em quarenta posts diferentes.</li>
-            <li>Você paga anúncio e manda a pessoa para um perfil, não para uma oferta.</li>
-          </ul>
-          <p class="fecho">Uma landing page resolve isso: uma página, uma oferta, um botão.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- O QUE ESTÁ INCLUSO -->
-    <section class="secao secao--branca" id="incluso">
-      <div class="wrap">
-        <p class="rotulo">O que você recebe</p>
-        <h2 class="titulo titulo--larga">Tudo o que uma página precisa para vender, sem você escrever uma linha.</h2>
-        <div class="itens">
-          <article class="item">
-            <span class="item__tag">texto</span>
-            <h3>Copy escrita por mim</h3>
-            <p>Eu escrevo a página a partir de uma conversa com você. Não precisa mandar nada pronto.</p>
-          </article>
-          <article class="item">
-            <span class="item__tag">celular</span>
-            <h3>Feita para o celular primeiro</h3>
-            <p>Quase todo mundo que chega pelo Instagram abre no celular. A página é desenhada para essa tela.</p>
-          </article>
-          <article class="item">
-            <span class="item__tag">whatsapp</span>
-            <h3>Botão com mensagem pronta</h3>
-            <p>O cliente cai no seu WhatsApp já dizendo o que quer, sem aquele "oi, tudo bem?" que não vira venda.</p>
-          </article>
-          <article class="item">
-            <span class="item__tag">publicação</span>
-            <h3>Página no ar</h3>
-            <p>Publico no seu domínio. Se você ainda não tem um, coloco num endereço gratuito até você decidir.</p>
-          </article>
-          <article class="item">
-            <span class="item__tag">medição</span>
-            <h3>Pixel da Meta e Analytics</h3>
-            <p>Instalados e testados, para você saber quantas pessoas visitaram e quantas clicaram no botão.</p>
-          </article>
-          <article class="item">
-            <span class="item__tag">ajustes</span>
-            <h3>Uma rodada de mudanças</h3>
-            <p>Depois da entrega, você aponta o que quer mudar e eu ajusto antes de publicar.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- POR QUE GRÁTIS -->
-    <section class="secao secao--amarela">
-      <div class="wrap duas duas--grande">
-        <h2 class="titulo titulo--enorme">Por que de graça?</h2>
-        <div class="porque">
-          <p>Porque é o jeito mais rápido de você ver meu trabalho funcionando no seu negócio, e não no de outra pessoa.</p>
-          <p>A página é sua, sem letra miúda. Se ela trouxer clientes e você quiser crescer com anúncios, aí a gente conversa sobre gestão de tráfego. Se não quiser, tudo bem: a página continua no ar.</p>
-        </div>
+        <p class="hero__frase entra" style="--d:3">Uma página, uma oferta, um botão.<br>Seu negócio, suas cores, seu WhatsApp.</p>
+        <ul class="selos entra" style="--d:4">
+          <li>Negócio local</li>
+          <li>Autônomos</li>
+          <li>Serviços</li>
+        </ul>
       </div>
     </section>
 
     <!-- COMO FUNCIONA -->
-    <section class="secao" id="como-funciona">
-      <div class="wrap">
+    <section class="wrap secao" id="como-funciona">
+      <div class="secao__cabeca">
         <p class="rotulo">Como funciona</p>
-        <h2 class="titulo titulo--larga">Do formulário à página no ar em cerca de uma semana.</h2>
-        <ol class="linha">
-          <li class="passo">
-            <span class="passo__quando">Hoje</span>
-            <h3>Você preenche o formulário</h3>
-            <p>Leva dois minutos. Suas respostas chegam direto no meu WhatsApp.</p>
-          </li>
-          <li class="passo">
-            <span class="passo__quando">Em até 2 dias</span>
-            <h3>A gente conversa 20 minutos</h3>
-            <p>Por chamada ou áudio. Eu pergunto sobre seu negócio, seu cliente e o que você quer vender.</p>
-          </li>
-          <li class="passo">
-            <span class="passo__quando">Em até 7 dias</span>
-            <h3>Você recebe a página</h3>
-            <p>Mando o link para você revisar no seu celular, com calma.</p>
-          </li>
-          <li class="passo">
-            <span class="passo__quando">Depois</span>
-            <h3>Ajusto e publico</h3>
-            <p>Faço as mudanças que você pedir e coloco a página no ar.</p>
-          </li>
-        </ol>
+        <h2 class="titulo"><span class="caixa">Três passos</span> <em>e está no ar.</em></h2>
+      </div>
+      <ol class="passos">
+        <li>
+          <span class="passos__n">01</span>
+          <span class="passos__quando">Hoje</span>
+          <h3>Você preenche o formulário</h3>
+          <p>Dois minutos. As respostas chegam direto no meu WhatsApp.</p>
+        </li>
+        <li>
+          <span class="passos__n">02</span>
+          <span class="passos__quando">Em até 2 dias</span>
+          <h3>A gente conversa 20 minutos</h3>
+          <p>Por chamada ou áudio. Eu entendo o seu negócio, o seu cliente e o que você quer vender.</p>
+        </li>
+        <li>
+          <span class="passos__n">03</span>
+          <span class="passos__quando">Em até 7 dias</span>
+          <h3>Sua página vai ao ar</h3>
+          <p>Você revisa no celular, pede os ajustes e eu publico.</p>
+        </li>
+      </ol>
+    </section>
+
+    <!-- O QUE VEM -->
+    <section class="wrap secao">
+      <div class="secao__cabeca">
+        <p class="rotulo">O que vem na página</p>
+        <h2 class="titulo"><span class="caixa">Tudo pronto</span> <em>pra vender.</em></h2>
+      </div>
+      <dl class="incluso">
+        <div><dt>Texto escrito por mim</dt><dd>A partir da nossa conversa. Você não precisa mandar nada pronto.</dd></div>
+        <div><dt>Feita para o celular</dt><dd>Quem chega pelo Instagram abre no celular. A página é pensada para essa tela.</dd></div>
+        <div><dt>Botão de WhatsApp</dt><dd>Com mensagem pronta: o cliente chega já dizendo o que quer.</dd></div>
+        <div><dt>Publicação</dt><dd>No seu domínio, ou num endereço gratuito até você ter um.</dd></div>
+        <div><dt>Pixel da Meta e Analytics</dt><dd>Instalados e testados, para medir quem visitou e quem clicou.</dd></div>
+        <div><dt>Uma rodada de ajustes</dt><dd>Você aponta o que quer mudar e eu ajusto antes de publicar.</dd></div>
+      </dl>
+    </section>
+
+    <!-- POR QUE DE GRAÇA -->
+    <section class="wrap secao porque">
+      <p class="rotulo">Por que de graça</p>
+      <p class="porque__frase">Porque o jeito mais rápido de você confiar no meu trabalho é ver ele funcionando no seu negócio.</p>
+      <p class="porque__corpo">A página é sua, sem letra miúda. Se ela trouxer clientes e você quiser crescer com anúncios, a gente conversa sobre tráfego pago. Se não, tudo bem: ela continua no ar.</p>
+    </section>
+
+    <!-- DÚVIDAS -->
+    <section class="wrap secao" id="duvidas">
+      <div class="secao__cabeca">
+        <p class="rotulo">Dúvidas</p>
+        <h2 class="titulo"><span class="caixa">Antes</span> <em>de pedir.</em></h2>
+      </div>
+      <div class="faq">
+        <details>
+          <summary>É de graça mesmo? Qual é a pegadinha?</summary>
+          <p>Não tem pegadinha. Você não paga pela página, nem agora nem depois. O único custo possível é o domínio (o endereço .com.br), que fica no seu nome e custa cerca de R$ 40 por ano no Registro.br. E só se você quiser um.</p>
+        </details>
+        <details>
+          <summary>Preciso ter CNPJ?</summary>
+          <p>Não. Profissionais autônomos podem pedir, e o domínio .com.br pode ser registrado com CPF.</p>
+        </details>
+        <details>
+          <summary>E se eu não gostar?</summary>
+          <p>Você tem uma rodada de ajustes incluída. Se mesmo assim não fizer sentido, sem problema: você não me deve nada.</p>
+        </details>
+        <details>
+          <summary>Você faz os anúncios também?</summary>
+          <p>Faço, mas é um serviço à parte e opcional. A página funciona sem isso.</p>
+        </details>
+        <details>
+          <summary>Por que as vagas são limitadas?</summary>
+          <p>Porque cada página é feita do zero, com texto escrito para o seu negócio. Quando as vagas do mês fecham, seu pedido vai para o mês seguinte.</p>
+        </details>
       </div>
     </section>
 
-    <!-- PARA QUEM É -->
-    <section class="secao secao--branca">
-      <div class="wrap">
-        <p class="rotulo">Para quem é</p>
-        <h2 class="titulo titulo--larga">Funciona melhor para quem vende pelo WhatsApp.</h2>
-        <div class="publico">
-          <div class="publico__col">
-            <h3>É para você se</h3>
-            <ul class="lista lista--sim">
-              <li>Tem um negócio local ou trabalha como profissional autônomo</li>
-              <li>Já tem Instagram ativo, mas ainda não tem site</li>
-              <li>Quer começar a anunciar, ou já anuncia e manda as pessoas para o perfil</li>
-              <li>Consegue separar 20 minutos para a nossa conversa</li>
-            </ul>
-          </div>
-          <div class="publico__col">
-            <h3>Não é para você se</h3>
-            <ul class="lista lista--nao">
-              <li>Precisa de uma loja virtual com catálogo e carrinho</li>
-              <li>Quer um site institucional com várias páginas</li>
-              <li>Precisa da página pronta para amanhã</li>
-            </ul>
-          </div>
-        </div>
+    <!-- PEDIDO -->
+    <section class="wrap secao pedido" id="pedido">
+      <div class="pedido__texto">
+        <p class="rotulo">Peça a sua</p>
+        <h2 class="titulo"><span class="caixa">Conte sobre</span> <em>o seu negócio.</em></h2>
+        <p>Ao enviar, o WhatsApp abre com suas respostas já escritas. É só apertar enviar por lá.</p>
+        <p class="pedido__vagas" data-vagas>As vagas são limitadas por mês.</p>
       </div>
-    </section>
-
-    <!-- EXEMPLOS (substituir pelos prints reais) -->
-    <section class="secao" id="exemplos">
-      <div class="wrap">
-        <p class="rotulo">Exemplos</p>
-        <h2 class="titulo titulo--larga">Páginas que já coloquei no ar.</h2>
-        <div class="exemplos">
-          <figure class="exemplo">
-            <div class="exemplo__tela"><span>print da página · 1200 × 800</span></div>
-            <figcaption><strong>Nome do cliente</strong> · segmento</figcaption>
-          </figure>
-          <figure class="exemplo">
-            <div class="exemplo__tela"><span>print da página · 1200 × 800</span></div>
-            <figcaption><strong>Nome do cliente</strong> · segmento</figcaption>
-          </figure>
-          <figure class="exemplo">
-            <div class="exemplo__tela"><span>print da página · 1200 × 800</span></div>
-            <figcaption><strong>Nome do cliente</strong> · segmento</figcaption>
-          </figure>
+      <form class="form" id="form-pedido" novalidate>
+        <div class="campo">
+          <label for="f-nome">Seu nome</label>
+          <input id="f-nome" name="nome" type="text" autocomplete="name" required>
+          <span class="campo__erro" data-erro="nome">Informe seu nome.</span>
         </div>
-      </div>
-    </section>
-
-    <!-- FAQ -->
-    <section class="secao secao--branca" id="duvidas">
-      <div class="wrap duas">
-        <div>
-          <p class="rotulo">Dúvidas</p>
-          <h2 class="titulo">Perguntas que todo mundo faz antes de pedir.</h2>
+        <div class="campo">
+          <label for="f-whats">WhatsApp com DDD</label>
+          <input id="f-whats" name="whatsapp" type="tel" inputmode="tel" autocomplete="tel" placeholder="(11) 91234-5678" required>
+          <span class="campo__erro" data-erro="whatsapp">Informe um número com DDD.</span>
         </div>
-        <div class="faq">
-          <details>
-            <summary>É grátis mesmo? Qual é a pegadinha?</summary>
-            <p>Não tem pegadinha. Você não paga pela página, nem agora nem depois. O único custo possível é o domínio (o endereço .com.br), que fica no seu nome e custa cerca de R$ 40 por ano no Registro.br. E só se você quiser um.</p>
-          </details>
-          <details>
-            <summary>Preciso ter CNPJ?</summary>
-            <p>Não. Profissionais autônomos podem pedir, e o domínio .com.br pode ser registrado com CPF.</p>
-          </details>
-          <details>
-            <summary>Onde a página fica hospedada?</summary>
-            <p>Numa hospedagem gratuita e rápida. Se um dia você quiser levar para outro lugar, eu entrego os arquivos.</p>
-          </details>
-          <details>
-            <summary>Quanto tempo leva?</summary>
-            <p>Até 7 dias depois da nossa conversa. Mais a rodada de ajustes, se você pedir mudanças.</p>
-          </details>
-          <details>
-            <summary>E se eu não gostar?</summary>
-            <p>Você tem uma rodada de ajustes incluída. Se mesmo assim não fizer sentido para você, sem problema: você não me deve nada.</p>
-          </details>
-          <details>
-            <summary>Você faz os anúncios também?</summary>
-            <p>Faço, mas é um serviço à parte e opcional. A página funciona sem isso.</p>
-          </details>
-          <details>
-            <summary>Por que as vagas são limitadas?</summary>
-            <p>Porque cada página é feita do zero, com texto escrito para o seu negócio. Quando as vagas do mês fecham, seu pedido entra na fila do mês seguinte.</p>
-          </details>
+        <div class="campo">
+          <label for="f-negocio">Nome do negócio</label>
+          <input id="f-negocio" name="negocio" type="text" autocomplete="organization" required>
+          <span class="campo__erro" data-erro="negocio">Informe o nome do negócio.</span>
         </div>
-      </div>
-    </section>
-
-    <!-- FORMULÁRIO -->
-    <section class="secao secao--azul" id="formulario">
-      <div class="wrap duas">
-        <div class="pedido">
-          <p class="rotulo rotulo--claro">Peça a sua</p>
-          <h2 class="titulo titulo--claro">Conte sobre o seu negócio.</h2>
-          <p>Ao enviar, o WhatsApp abre com suas respostas já escritas. É só apertar enviar por lá.</p>
-          <p class="pedido__vagas" data-vagas-texto>As vagas são limitadas por mês.</p>
+        <div class="campo">
+          <label for="f-insta">Instagram <small>(opcional)</small></label>
+          <input id="f-insta" name="instagram" type="text" placeholder="@seunegocio">
         </div>
-        <form class="form" id="form-pedido" novalidate>
-          <div class="campo">
-            <label for="f-nome">Seu nome</label>
-            <input id="f-nome" name="nome" type="text" autocomplete="name" required>
-            <span class="campo__erro" data-erro="nome">Informe seu nome.</span>
-          </div>
-          <div class="campo">
-            <label for="f-whats">WhatsApp com DDD</label>
-            <input id="f-whats" name="whatsapp" type="tel" inputmode="tel" autocomplete="tel" placeholder="(11) 91234-5678" required>
-            <span class="campo__erro" data-erro="whatsapp">Informe um número com DDD, só com números.</span>
-          </div>
-          <div class="campo">
-            <label for="f-negocio">Nome do negócio</label>
-            <input id="f-negocio" name="negocio" type="text" autocomplete="organization" required>
-            <span class="campo__erro" data-erro="negocio">Informe o nome do negócio.</span>
-          </div>
-          <div class="campo">
-            <label for="f-insta">Instagram <small>(opcional)</small></label>
-            <input id="f-insta" name="instagram" type="text" placeholder="@seunegocio">
-          </div>
-          <div class="campo">
-            <label for="f-segmento">Segmento</label>
-            <select id="f-segmento" name="segmento" required>
-              <option value="">Escolha uma opção</option>
-              <option>Saúde e estética</option>
-              <option>Alimentação</option>
-              <option>Serviços</option>
-              <option>Educação e cursos</option>
-              <option>Moda e varejo</option>
-              <option>Outro</option>
-            </select>
-            <span class="campo__erro" data-erro="segmento">Escolha o segmento.</span>
-          </div>
-          <fieldset class="campo">
-            <legend>Você já faz anúncios?</legend>
-            <div class="opcoes">
-              <label><input type="radio" name="anuncios" value="Sim" required> Sim</label>
-              <label><input type="radio" name="anuncios" value="Ainda não"> Ainda não</label>
-            </div>
-            <span class="campo__erro" data-erro="anuncios">Escolha uma opção.</span>
-          </fieldset>
-          <button class="btn btn--cheio" type="submit">Enviar pelo WhatsApp</button>
-        </form>
-      </div>
+        <button class="btn" type="submit">Enviar pelo WhatsApp <span aria-hidden="true">↗</span></button>
+      </form>
     </section>
 
   </main>
 
-  <footer class="rodape">
-    <div class="wrap rodape__in">
-      <div>
-        <span class="marca__nome">Breno Andreati</span>
-        <p>Landing pages e tráfego pago para negócios que vendem pelo WhatsApp.</p>
-      </div>
-      <nav class="rodape__links" aria-label="Contato">
-        <a href="#" data-insta>Instagram</a>
-        <a href="#formulario" data-wa>WhatsApp</a>
-      </nav>
-      <p class="rodape__copy">© <span data-ano>2026</span> Breno Andreati</p>
-    </div>
+  <footer class="wrap rodape">
+    <a class="marca" href="#" aria-label="Breno Andreati, voltar ao início">
+      <img class="marca__logo" src="assets/logo.svg" alt="" width="34" height="26">
+      <span class="marca__nome">Breno <em>Andreati</em></span>
+    </a>
+    <nav class="rodape__links" aria-label="Contato">
+      <a href="#" data-insta>Instagram</a>
+      <a href="#pedido" data-wa>WhatsApp</a>
+    </nav>
+    <p class="rodape__copy">© <span data-ano>2026</span> Breno Andreati</p>
   </footer>
-
-  <a class="wa-flutuante" href="#formulario" data-wa aria-label="Falar no WhatsApp">
-    <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2c0 1.3 1 2.6 1.1 2.8.1.2 1.9 2.9 4.6 4 1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2l-.3-.2Z"/></svg>
-  </a>
 
   <script src="assets/main.js" defer></script>
 </body>
