@@ -22,7 +22,7 @@ var FUSO = 'America/Sao_Paulo';
 
 // ---------------------------------------------------------------------------
 
-var VERSAO = 1;
+var VERSAO = 2;
 var SENHA_EXEMPLO = ['troque', 'esta', 'senha'].join('-'); // escrito assim para não mudar junto se você usar "substituir" na senha
 var COLUNAS = ['id', 'titulo', 'data', 'hora', 'horaFim', 'repete', 'cada', 'dias', 'ate', 'avisos', 'notas', 'excecoes', 'atualizado', 'apagado'];
 var COLUNAS_ENVIADOS = ['chave', 'quando', 'situacao'];
@@ -315,10 +315,10 @@ function temCanal_(cfg) {
 }
 
 function enviar_(cfg, texto, assunto) {
-  var r = { ok: false, whatsapp: '', email: '' };
+  var r = { ok: false, whatsapp: '', email: '', respostaWhats: '' };
   if (cfg.whatsapp.numero && cfg.whatsapp.chave) {
     try {
-      enviarWhatsApp_(cfg.whatsapp, texto);
+      r.respostaWhats = enviarWhatsApp_(cfg.whatsapp, texto);
       r.whatsapp = 'ok';
       r.ok = true;
     } catch (err) {
@@ -335,13 +335,15 @@ function enviar_(cfg, texto, assunto) {
     }
   }
   var agora = agora_();
-  gravarJson_('ULTIMO_ENVIO', { quando: agora.iso + ' ' + agora.hora, assunto: assunto, whatsapp: r.whatsapp, email: r.email });
+  gravarJson_('ULTIMO_ENVIO', { quando: agora.iso + ' ' + agora.hora, assunto: assunto, whatsapp: r.whatsapp, email: r.email, respostaWhats: r.respostaWhats });
   return r;
 }
 
+// Devolve o texto que o CallMeBot respondeu (para mostrar no app em "Último envio")
 function enviarWhatsApp_(w, texto) {
+  // Só os dígitos, igual ao link que o CallMeBot manda na ativação (ex.: 5527999999999)
   var url = 'https://api.callmebot.com/whatsapp.php' +
-    '?phone=' + encodeURIComponent(w.numero) +
+    '?phone=' + encodeURIComponent(String(w.numero).replace(/\D/g, '')) +
     '&text=' + encodeURIComponent(texto) +
     '&apikey=' + encodeURIComponent(w.chave);
   var resp = UrlFetchApp.fetch(url, { muteHttpExceptions: true, followRedirects: true });
@@ -352,10 +354,11 @@ function enviarWhatsApp_(w, texto) {
     .replace(/\s+/g, ' ')
     .trim();
   var deuCerto = /queued|sent|enviad/i.test(corpo);
-  var deuErro = /invalid|error|wrong|incorrect|not (?:allowed|active|activated)|blocked|paused/i.test(corpo);
+  var deuErro = /invalid|error|wrong|incorrect|not (?:allowed|active|activated|found)|blocked|paused|stopped|0 messages|subscribe|limit|exceeded|unauthori[sz]ed/i.test(corpo);
   if (codigo >= 300 || (deuErro && !deuCerto)) {
     throw new Error('CallMeBot respondeu ' + codigo + ': ' + (corpo.slice(0, 160) || 'sem resposta'));
   }
+  return corpo.slice(0, 200);
 }
 
 function testar_() {

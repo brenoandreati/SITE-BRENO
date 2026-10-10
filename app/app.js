@@ -825,7 +825,8 @@
     $('#av-ultimo').textContent = u
       ? 'Último envio: ' + u.quando.split(' ')[0].split('-').reverse().join('/') + ' às ' + u.quando.split(' ')[1] +
         (u.whatsapp ? ' · WhatsApp: ' + (u.whatsapp === 'ok' ? 'ok' : u.whatsapp) : '') +
-        (u.email ? ' · E-mail: ' + (u.email === 'ok' ? 'ok' : u.email) : '')
+        (u.email ? ' · E-mail: ' + (u.email === 'ok' ? 'ok' : u.email) : '') +
+        (u.respostaWhats ? ' · Resposta do CallMeBot: “' + u.respostaWhats + '”' : '')
       : '';
   }
 

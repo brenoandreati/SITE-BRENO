@@ -84,7 +84,7 @@ test('lembretes chegam no WhatsApp na hora certa, uma vez só', () => {
   g.avancar(60); // 15:00 de quarta → aviso de 1 dia antes
   g.rodarGatilho();
   assert.equal(g.whats.length, 1);
-  assert.equal(g.whats[0].phone, '+5511912345678');
+  assert.equal(g.whats[0].phone, '5511912345678');
   assert.equal(g.whats[0].apikey, 'abc123');
   assert.match(g.whats[0].text, /Dentista/);
   assert.match(g.whats[0].text, /Amanhã, às 15:00/);
@@ -152,6 +152,12 @@ test('resumo do dia pela manhã, só quando tem compromisso', () => {
 
 test('se o WhatsApp falhar, tenta de novo até 3 vezes e avisa no último envio', () => {
   const g = criarGoogle({ agora: '2026-10-15T14:00:00-03:00', respostaWhats: { codigo: 200, corpo: 'APIKey is invalid' } });
+  // respostas de limite do CallMeBot também contam como falha
+  for (const corpo of ['You have 0 messages left. Please, subscribe', 'Phone not found']) {
+    const h = criarGoogle({ respostaWhats: { codigo: 200, corpo } });
+    h.post({ acao: 'salvarConfig', config: { whatsapp: { numero: '5511912345678', chave: 'x' } } });
+    assert.match(h.post({ acao: 'testar' }).resultado.whatsapp, /^erro/);
+  }
   g.post({ acao: 'salvarConfig', config: { whatsapp: { numero: '5511912345678', chave: 'errada' } } });
   g.post({ acao: 'sincronizar', eventos: [evento({ titulo: 'Reunião', data: '2026-10-15', hora: '15:00', avisos: [60] })] });
   for (let i = 0; i < 5; i++) { g.rodarGatilho(); g.avancar(5); }
@@ -181,4 +187,7 @@ test('testar manda mensagem e reclama se nada estiver configurado', () => {
   assert.equal(r.ok, true);
   assert.equal(r.resultado.whatsapp, 'ok');
   assert.equal(g.whats.length, 1);
+  assert.equal(g.whats[0].phone, '5511912345678');
+  // a resposta do CallMeBot fica guardada para aparecer no app
+  assert.match(g.post({ acao: 'ping' }).ultimoEnvio.respostaWhats, /Message queued/);
 });
