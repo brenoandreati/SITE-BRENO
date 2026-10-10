@@ -1,0 +1,12 @@
+# Arquivos que não vão para o site publicado no Cloudflare
+.git
+.github
+node_modules
+testes
+ferramentas
+package.json
+package-lock.json
+wrangler.jsonc
+.assetsignore
+.wrangler
+README.md

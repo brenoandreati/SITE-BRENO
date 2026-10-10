@@ -2,225 +2,315 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Landing page de graça · Breno Andreati</title>
-  <meta name="description" content="Eu escrevo, desenho e coloco no ar uma landing page para o seu negócio, com botão de WhatsApp e pronta para anúncios. Você não paga nada por ela.">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Agenda</title>
+  <meta name="description" content="Sua agenda no computador e no celular, com lembretes no WhatsApp.">
   <meta name="theme-color" content="#02081C">
-
-  <meta property="og:type" content="website">
-  <meta property="og:locale" content="pt_BR">
-  <meta property="og:title" content="Landing page de graça pro seu negócio">
-  <meta property="og:description" content="Página com botão de WhatsApp, versão de celular e pixel instalado. Sem cartão, sem contrato.">
-
-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <meta name="color-scheme" content="dark">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Agenda">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="app/icones/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="app/icones/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..900&family=Newsreader:ital,opsz,wght@1,6..72,400..700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..800&family=Newsreader:ital,opsz,wght@1,6..72,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="app/estilo.css">
 </head>
 <body>
-  <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+  <svg class="sprite" aria-hidden="true">
+    <symbol id="i-agenda" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
+    <symbol id="i-busca" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></symbol>
+    <symbol id="i-ajustes" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol>
+    <symbol id="i-sino" viewBox="0 0 24 24"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 1.5h-15z"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0"/></symbol>
+    <symbol id="i-repete" viewBox="0 0 24 24"><path d="M4 11V9.5A3.5 3.5 0 0 1 7.5 6H19m-3-3 3 3-3 3M20 13v1.5a3.5 3.5 0 0 1-3.5 3.5H5m3 3-3-3 3-3"/></symbol>
+    <symbol id="i-mais" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-seta-esq" viewBox="0 0 24 24"><path d="m14.5 6-6 6 6 6"/></symbol>
+    <symbol id="i-seta-dir" viewBox="0 0 24 24"><path d="m9.5 6 6 6-6 6"/></symbol>
+    <symbol id="i-fechar" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-nota" viewBox="0 0 24 24"><path d="M5 5h14M5 10h14M5 15h9"/></symbol>
+  </svg>
 
-  <header class="wrap topo">
-    <a class="marca" href="#" aria-label="Breno Andreati, início">
-      <img class="marca__logo" src="assets/logo.svg" alt="" width="34" height="26">
-      <span class="marca__nome">Breno <em>Andreati</em></span>
-    </a>
-    <a class="topo__cta" href="#pedido">Quero a minha <span aria-hidden="true">↘</span></a>
+  <header class="topo">
+    <div class="topo__dentro">
+      <a class="marca" href="#agenda" aria-label="Agenda, início">
+        <img src="app/icones/logo.svg" alt="" width="30" height="23">
+        <span>Agenda</span>
+      </a>
+      <nav class="abas" aria-label="Seções">
+        <a class="abas__item" href="#agenda" data-aba="agenda"><svg><use href="#i-agenda"/></svg><span>Agenda</span></a>
+        <a class="abas__item" href="#buscar" data-aba="buscar"><svg><use href="#i-busca"/></svg><span>Buscar</span></a>
+        <a class="abas__item" href="#ajustes" data-aba="ajustes"><svg><use href="#i-ajustes"/></svg><span>Ajustes</span></a>
+      </nav>
+      <button class="sinc" id="sinc" type="button" data-estado="local">
+        <span class="sinc__ponto" aria-hidden="true"></span>
+        <span class="sinc__texto">Só neste aparelho</span>
+      </button>
+    </div>
   </header>
 
-  <main id="conteudo">
+  <main class="conteudo">
 
-    <!-- HERO -->
-    <section class="wrap hero">
-      <div class="hero__texto">
-        <p class="rotulo entra" style="--d:0">Para quem vende pelo WhatsApp</p>
-        <h1 class="hero__titulo entra" style="--d:1">
-          <span class="caixa">Landing page</span>
-          <span class="caixa">de graça</span>
-          <em>pro seu negócio.</em>
-        </h1>
-        <p class="hero__sub entra" style="--d:2">Seu negócio merece mais que um link na bio.</p>
-        <p class="hero__corpo entra" style="--d:2">Eu escrevo, desenho e coloco no ar uma página com a sua cara, com botão de WhatsApp e pronta para anúncio. Você não paga nada por ela.</p>
-        <a class="btn entra" style="--d:3" href="#pedido">Quero a minha <span aria-hidden="true">↓</span></a>
-        <div class="autor entra" style="--d:4">
-          <span class="autor__foto"><img src="assets/logo.svg" alt="" width="26" height="20"></span>
-          <p>Página feita por<br><strong>Breno Andreati</strong></p>
+    <!-- AGENDA -->
+    <section class="aba" id="aba-agenda" aria-labelledby="titulo-agenda">
+      <header class="cabeca">
+        <p class="rotulo" id="hoje-rotulo">Hoje</p>
+        <h1 class="titulo" id="titulo-agenda">Agenda</h1>
+      </header>
+
+      <form class="rapido" id="rapido" autocomplete="off">
+        <label class="rapido__rotulo" for="rapido-texto">O que você tem? Escreva com o dia da semana.</label>
+        <div class="rapido__linha">
+          <input id="rapido-texto" type="text" enterkeyhint="done" maxlength="200"
+                 placeholder="Ex.: Dentista quinta às 15h">
+          <button class="btn btn--claro" type="submit">Agendar</button>
         </div>
-      </div>
-
-      <div class="hero__lado">
-        <div class="vitrine entra" style="--d:2" aria-hidden="true">
-          <div class="vitrine__barra">
-            <span class="vitrine__pontos"><i></i><i></i><i></i></span>
-            <span>suapagina.com.br</span>
-            <span>↗</span>
-          </div>
-          <div class="vitrine__tela">
-            <div class="mini">
-              <div class="mini__topo">
-                <span class="mini__marca">Seu <em>negócio</em></span>
-                <span class="mini__link">Falar no WhatsApp</span>
-              </div>
-              <div class="mini__corpo">
-                <div>
-                  <p class="mini__rotulo">Landing page · 2026</p>
-                  <p class="mini__titulo"><span class="caixa">Seu negócio</span><em>em uma página.</em></p>
-                  <p class="mini__por">Por Breno Andreati</p>
-                  <span class="mini__btn">Pedir no WhatsApp ↓</span>
-                </div>
-                <div class="celular">
-                  <span class="celular__rotulo">Versão de celular</span>
-                  <p class="celular__titulo"><span class="caixa">Seu negócio</span><em>em uma página.</em></p>
-                  <span class="celular__linha"></span>
-                  <span class="celular__linha celular__linha--curta"></span>
-                  <span class="celular__btn">WhatsApp</span>
-                  <span class="celular__img"></span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="vitrine__rodape">
-            <p>Esta é a estrutura.</p>
-            <p class="vitrine__frase">A próxima página pode ser a sua. ↗</p>
-          </div>
+        <div class="previa" id="previa" aria-live="polite"></div>
+        <div class="exemplos" id="exemplos">
+          <span>Tente:</span>
+          <button type="button" class="exemplo">Academia toda segunda e quarta 18h</button>
+          <button type="button" class="exemplo">Aniversário da mãe 12/11</button>
+          <button type="button" class="exemplo">Pagar aluguel dia 5 todo mês</button>
         </div>
-        <p class="hero__frase entra" style="--d:3">Uma página, uma oferta, um botão.<br>Seu negócio, suas cores, seu WhatsApp.</p>
-        <ul class="selos entra" style="--d:4">
-          <li>Negócio local</li>
-          <li>Autônomos</li>
-          <li>Serviços</li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- COMO FUNCIONA -->
-    <section class="wrap secao" id="como-funciona">
-      <div class="secao__cabeca">
-        <p class="rotulo">Como funciona</p>
-        <h2 class="titulo"><span class="caixa">Três passos</span> <em>e está no ar.</em></h2>
-      </div>
-      <ol class="passos">
-        <li>
-          <span class="passos__n">01</span>
-          <span class="passos__quando">Hoje</span>
-          <h3>Você preenche o formulário</h3>
-          <p>Dois minutos. As respostas chegam direto no meu WhatsApp.</p>
-        </li>
-        <li>
-          <span class="passos__n">02</span>
-          <span class="passos__quando">Em até 2 dias</span>
-          <h3>A gente conversa 20 minutos</h3>
-          <p>Por chamada ou áudio. Eu entendo o seu negócio, o seu cliente e o que você quer vender.</p>
-        </li>
-        <li>
-          <span class="passos__n">03</span>
-          <span class="passos__quando">Em até 7 dias</span>
-          <h3>Sua página vai ao ar</h3>
-          <p>Você revisa no celular, pede os ajustes e eu publico.</p>
-        </li>
-      </ol>
-    </section>
-
-    <!-- O QUE VEM -->
-    <section class="wrap secao">
-      <div class="secao__cabeca">
-        <p class="rotulo">O que vem na página</p>
-        <h2 class="titulo"><span class="caixa">Tudo pronto</span> <em>pra vender.</em></h2>
-      </div>
-      <dl class="incluso">
-        <div><dt>Texto escrito por mim</dt><dd>A partir da nossa conversa. Você não precisa mandar nada pronto.</dd></div>
-        <div><dt>Feita para o celular</dt><dd>Quem chega pelo Instagram abre no celular. A página é pensada para essa tela.</dd></div>
-        <div><dt>Botão de WhatsApp</dt><dd>Com mensagem pronta: o cliente chega já dizendo o que quer.</dd></div>
-        <div><dt>Publicação</dt><dd>No seu domínio, ou num endereço gratuito até você ter um.</dd></div>
-        <div><dt>Pixel da Meta e Analytics</dt><dd>Instalados e testados, para medir quem visitou e quem clicou.</dd></div>
-        <div><dt>Uma rodada de ajustes</dt><dd>Você aponta o que quer mudar e eu ajusto antes de publicar.</dd></div>
-      </dl>
-    </section>
-
-    <!-- POR QUE DE GRAÇA -->
-    <section class="wrap secao porque">
-      <p class="rotulo">Por que de graça</p>
-      <p class="porque__frase">Porque o jeito mais rápido de você confiar no meu trabalho é ver ele funcionando no seu negócio.</p>
-      <p class="porque__corpo">A página é sua, sem letra miúda. Se ela trouxer clientes e você quiser crescer com anúncios, a gente conversa sobre tráfego pago. Se não, tudo bem: ela continua no ar.</p>
-    </section>
-
-    <!-- DÚVIDAS -->
-    <section class="wrap secao" id="duvidas">
-      <div class="secao__cabeca">
-        <p class="rotulo">Dúvidas</p>
-        <h2 class="titulo"><span class="caixa">Antes</span> <em>de pedir.</em></h2>
-      </div>
-      <div class="faq">
-        <details>
-          <summary>É de graça mesmo? Qual é a pegadinha?</summary>
-          <p>Não tem pegadinha. Você não paga pela página, nem agora nem depois. O único custo possível é o domínio (o endereço .com.br), que fica no seu nome e custa cerca de R$ 40 por ano no Registro.br. E só se você quiser um.</p>
-        </details>
-        <details>
-          <summary>Preciso ter CNPJ?</summary>
-          <p>Não. Profissionais autônomos podem pedir, e o domínio .com.br pode ser registrado com CPF.</p>
-        </details>
-        <details>
-          <summary>E se eu não gostar?</summary>
-          <p>Você tem uma rodada de ajustes incluída. Se mesmo assim não fizer sentido, sem problema: você não me deve nada.</p>
-        </details>
-        <details>
-          <summary>Você faz os anúncios também?</summary>
-          <p>Faço, mas é um serviço à parte e opcional. A página funciona sem isso.</p>
-        </details>
-        <details>
-          <summary>Por que as vagas são limitadas?</summary>
-          <p>Porque cada página é feita do zero, com texto escrito para o seu negócio. Quando as vagas do mês fecham, seu pedido vai para o mês seguinte.</p>
-        </details>
-      </div>
-    </section>
-
-    <!-- PEDIDO -->
-    <section class="wrap secao pedido" id="pedido">
-      <div class="pedido__texto">
-        <p class="rotulo">Peça a sua</p>
-        <h2 class="titulo"><span class="caixa">Conte sobre</span> <em>o seu negócio.</em></h2>
-        <p>Ao enviar, o WhatsApp abre com suas respostas já escritas. É só apertar enviar por lá.</p>
-        <p class="pedido__vagas" data-vagas>As vagas são limitadas por mês.</p>
-      </div>
-      <form class="form" id="form-pedido" novalidate>
-        <div class="campo">
-          <label for="f-nome">Seu nome</label>
-          <input id="f-nome" name="nome" type="text" autocomplete="name" required>
-          <span class="campo__erro" data-erro="nome">Informe seu nome.</span>
-        </div>
-        <div class="campo">
-          <label for="f-whats">WhatsApp com DDD</label>
-          <input id="f-whats" name="whatsapp" type="tel" inputmode="tel" autocomplete="tel" placeholder="(11) 91234-5678" required>
-          <span class="campo__erro" data-erro="whatsapp">Informe um número com DDD.</span>
-        </div>
-        <div class="campo">
-          <label for="f-negocio">Nome do negócio</label>
-          <input id="f-negocio" name="negocio" type="text" autocomplete="organization" required>
-          <span class="campo__erro" data-erro="negocio">Informe o nome do negócio.</span>
-        </div>
-        <div class="campo">
-          <label for="f-insta">Instagram <small>(opcional)</small></label>
-          <input id="f-insta" name="instagram" type="text" placeholder="@seunegocio">
-        </div>
-        <button class="btn" type="submit">Enviar pelo WhatsApp <span aria-hidden="true">↗</span></button>
+        <button class="btn btn--texto rapido__form" type="button" data-novo><svg aria-hidden="true"><use href="#i-mais"/></svg>Preencher pelo formulário</button>
       </form>
+
+      <div class="lista" id="lista"></div>
+      <button class="btn btn--linha mais-dias" id="mais-dias" type="button">Ver mais dias</button>
     </section>
 
+    <!-- BUSCAR -->
+    <section class="aba" id="aba-buscar" aria-labelledby="titulo-buscar" hidden>
+      <header class="cabeca">
+        <p class="rotulo">Buscar</p>
+        <h1 class="titulo" id="titulo-buscar">Tenho algo <em>nesse dia?</em></h1>
+      </header>
+      <div class="busca">
+        <svg class="busca__icone" aria-hidden="true"><use href="#i-busca"/></svg>
+        <label class="sr" for="busca-texto">Buscar por nome ou data</label>
+        <input id="busca-texto" type="search" enterkeyhint="search" autocomplete="off"
+               placeholder="Nome ou data: dentista, sexta, 20/10…">
+      </div>
+      <div class="buscar-grade">
+        <div class="calendario" id="calendario"></div>
+        <div class="resultado" id="resultado" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- AJUSTES -->
+    <section class="aba" id="aba-ajustes" aria-labelledby="titulo-ajustes" hidden>
+      <header class="cabeca">
+        <p class="rotulo">Ajustes</p>
+        <h1 class="titulo" id="titulo-ajustes">Ajustes</h1>
+      </header>
+
+      <section class="cartao" aria-labelledby="t-conexao">
+        <h2 id="t-conexao">Computador e celular juntos</h2>
+        <p class="cartao__texto" id="conexao-texto">Hoje a agenda fica só neste aparelho. Conecte ao seu Google para ter a mesma agenda no computador e no celular e receber os avisos no WhatsApp.</p>
+        <form id="form-conexao" class="form" autocomplete="off">
+          <div class="campo">
+            <label for="cx-url">Endereço do servidor (URL do app da Web)</label>
+            <input id="cx-url" name="url" type="url" inputmode="url" placeholder="https://script.google.com/macros/s/…/exec" required>
+          </div>
+          <div class="campo">
+            <label for="cx-senha">Senha</label>
+            <input id="cx-senha" name="senha" type="password" autocomplete="current-password" required>
+          </div>
+          <p class="mensagem" id="cx-msg" role="status"></p>
+          <div class="botoes">
+            <button class="btn btn--claro" type="submit" id="cx-conectar">Conectar</button>
+            <button class="btn btn--linha" type="button" id="cx-sincronizar" hidden>Sincronizar agora</button>
+            <button class="btn btn--texto" type="button" id="cx-desconectar" hidden>Desconectar este aparelho</button>
+          </div>
+        </form>
+        <details class="guia" id="guia-google">
+          <summary>Como criar o servidor (uns 5 minutos, uma vez só)</summary>
+          <ol>
+            <li>Toque em <button type="button" class="link" id="copiar-codigo">copiar o código do servidor</button>. <a href="servidor/Codigo.gs" target="_blank" rel="noopener">Ver o código</a>.</li>
+            <li>Abra <a href="https://script.google.com/home/projects/create" target="_blank" rel="noopener">script.google.com</a> (com a sua conta Google) e crie um <strong>Novo projeto</strong>.</li>
+            <li>Apague o que estiver lá, cole o código e, na linha <code>var SENHA</code>, troque <code>troque-esta-senha</code> por uma senha sua. Salve.</li>
+            <li>No topo, com <code>instalar</code> escolhido, clique em <strong>Executar</strong>. O Google vai pedir permissão: <em>Revisar permissões → sua conta → Avançado → Acessar → Permitir</em>.</li>
+            <li>Clique em <strong>Implantar → Nova implantação</strong>, escolha o tipo <strong>App da Web</strong>, com <em>Executar como: Eu</em> e <em>Quem pode acessar: Qualquer pessoa</em>. Clique em Implantar.</li>
+            <li>Copie o <strong>URL do app da Web</strong> (termina em <code>/exec</code>) e cole aqui em cima com a sua senha.</li>
+            <li>No outro aparelho, abra este mesmo site e faça só o passo 6.</li>
+          </ol>
+          <p class="nota">A agenda fica numa planilha chamada “Agenda (dados)” no seu Google Drive. Só quem tem a senha consegue ler ou mudar.</p>
+        </details>
+      </section>
+
+      <section class="cartao" aria-labelledby="t-avisos" id="cartao-avisos">
+        <h2 id="t-avisos">Avisos no WhatsApp</h2>
+        <p class="cartao__texto" id="avisos-bloqueio">Conecte ao Google primeiro (acima). É o servidor do Google que manda as mensagens, mesmo com o app fechado.</p>
+        <form id="form-avisos" class="form" autocomplete="off">
+          <fieldset class="grupo">
+            <legend>WhatsApp</legend>
+            <div class="campo">
+              <label for="av-numero">Seu número com DDD</label>
+              <input id="av-numero" name="numero" type="tel" inputmode="tel" placeholder="(11) 91234-5678">
+            </div>
+            <div class="campo">
+              <label for="av-chave">Chave do CallMeBot (apikey)</label>
+              <input id="av-chave" name="chave" type="text" inputmode="numeric" placeholder="Ex.: 1234567">
+            </div>
+            <details class="guia">
+              <summary>Como pegar a chave (1 minuto)</summary>
+              <ol>
+                <li>Abra a <a href="https://www.callmebot.com/blog/free-api-whatsapp-messages/" target="_blank" rel="noopener">página do CallMeBot</a> e salve nos seus contatos o número que aparece lá.</li>
+                <li>Mande pelo WhatsApp, para esse contato, a mensagem: <code>I allow callmebot to send me messages</code></li>
+                <li>Você recebe uma resposta com a sua <strong>apikey</strong>. Cole aqui, salve e toque em <em>Mandar teste</em>.</li>
+              </ol>
+              <p class="nota">O CallMeBot é um serviço gratuito para uso pessoal. Se um dia ele falhar, os avisos também podem ir por e-mail (abaixo).</p>
+            </details>
+          </fieldset>
+
+          <fieldset class="grupo">
+            <legend>Também por e-mail</legend>
+            <label class="chave-liga"><input type="checkbox" name="emailAtivo" id="av-email-ativo"><span>Mandar os avisos também por e-mail</span></label>
+            <div class="campo">
+              <label for="av-email">E-mail</label>
+              <input id="av-email" name="email" type="email" inputmode="email" placeholder="voce@gmail.com">
+            </div>
+          </fieldset>
+
+          <fieldset class="grupo">
+            <legend>Resumo do dia</legend>
+            <label class="chave-liga"><input type="checkbox" name="resumoAtivo" id="av-resumo-ativo"><span>Todo dia de manhã, a lista do que tem no dia</span></label>
+            <div class="campo campo--curto">
+              <label for="av-resumo-hora">Horário</label>
+              <select id="av-resumo-hora" name="resumoHora"></select>
+            </div>
+          </fieldset>
+
+          <fieldset class="grupo">
+            <legend>Aviso padrão para compromissos novos</legend>
+            <div class="chips" id="av-padrao" role="group" aria-label="Avisar"></div>
+          </fieldset>
+
+          <p class="mensagem" id="av-msg" role="status"></p>
+          <div class="botoes">
+            <button class="btn btn--claro" type="submit">Salvar</button>
+            <button class="btn btn--linha" type="button" id="av-testar">Mandar teste</button>
+          </div>
+          <p class="nota" id="av-ultimo"></p>
+        </form>
+      </section>
+
+      <section class="cartao" aria-labelledby="t-instalar">
+        <h2 id="t-instalar">Instalar no celular</h2>
+        <p class="cartao__texto" id="instalar-texto">
+          <strong>iPhone:</strong> abra este site no Safari, toque em Compartilhar
+          e depois em <em>Adicionar à Tela de Início</em>.<br>
+          <strong>Android:</strong> no Chrome, toque nos três pontinhos e em <em>Instalar app</em> (ou <em>Adicionar à tela inicial</em>).
+        </p>
+        <button class="btn btn--claro" type="button" id="instalar" hidden>Instalar agora</button>
+      </section>
+
+      <section class="cartao" aria-labelledby="t-copia">
+        <h2 id="t-copia">Cópia de segurança</h2>
+        <p class="cartao__texto">Baixe um arquivo com toda a agenda, ou traga de volta um arquivo baixado antes.</p>
+        <div class="botoes">
+          <button class="btn btn--linha" type="button" id="exportar">Baixar cópia</button>
+          <label class="btn btn--linha" for="importar">Trazer cópia</label>
+          <input class="sr" type="file" id="importar" accept="application/json,.json">
+        </div>
+        <p class="mensagem" id="copia-msg" role="status"></p>
+      </section>
+    </section>
   </main>
 
-  <footer class="wrap rodape">
-    <a class="marca" href="#" aria-label="Breno Andreati, voltar ao início">
-      <img class="marca__logo" src="assets/logo.svg" alt="" width="34" height="26">
-      <span class="marca__nome">Breno <em>Andreati</em></span>
-    </a>
-    <nav class="rodape__links" aria-label="Contato">
-      <a href="#" data-insta>Instagram</a>
-      <a href="#pedido" data-wa>WhatsApp</a>
-    </nav>
-    <p class="rodape__copy">© <span data-ano>2026</span> Breno Andreati</p>
-  </footer>
+  <!-- Formulário do compromisso -->
+  <dialog class="folha" id="folha" aria-labelledby="folha-titulo">
+    <form class="form" id="form-evento" method="dialog" novalidate>
+      <header class="folha__topo">
+        <h2 id="folha-titulo">Novo compromisso</h2>
+        <button class="icone-btn" type="button" data-fechar aria-label="Fechar"><svg><use href="#i-fechar"/></svg></button>
+      </header>
 
-  <script src="assets/main.js" defer></script>
+      <div class="folha__corpo">
+        <div class="campo">
+          <label for="ev-titulo">O que é</label>
+          <input id="ev-titulo" name="titulo" type="text" maxlength="200" placeholder="Ex.: Dentista" required>
+          <span class="campo__erro">Escreva o que é.</span>
+        </div>
+
+        <div class="campo">
+          <span class="campo__rotulo" id="ev-semana-rotulo">Dia da semana</span>
+          <div class="semana" id="ev-semana" role="group" aria-labelledby="ev-semana-rotulo"></div>
+          <p class="dica" id="ev-semana-dica"></p>
+        </div>
+
+        <div class="linha-campos">
+          <div class="campo">
+            <label for="ev-data" id="ev-data-rotulo">Data</label>
+            <input id="ev-data" name="data" type="date" required>
+          </div>
+          <div class="campo">
+            <label for="ev-hora">Horário</label>
+            <input id="ev-hora" name="hora" type="time">
+          </div>
+          <div class="campo">
+            <label for="ev-hora-fim">Até <small>(opcional)</small></label>
+            <input id="ev-hora-fim" name="horaFim" type="time">
+          </div>
+        </div>
+        <label class="chave-liga"><input type="checkbox" name="diaTodo" id="ev-dia-todo"><span>Dia todo (sem horário)</span></label>
+
+        <fieldset class="campo">
+          <legend class="campo__rotulo">Repetir</legend>
+          <div class="segmentos" id="ev-repete">
+            <label><input type="radio" name="repete" value="nao" checked><span>Não repete</span></label>
+            <label><input type="radio" name="repete" value="semanal"><span>Toda semana</span></label>
+            <label><input type="radio" name="repete" value="mensal"><span>Todo mês</span></label>
+            <label><input type="radio" name="repete" value="anual"><span>Todo ano</span></label>
+          </div>
+          <div class="repete-extra" id="ev-repete-extra" hidden>
+            <div class="campo campo--curto">
+              <label for="ev-cada" id="ev-cada-rotulo">A cada</label>
+              <select id="ev-cada" name="cada"></select>
+            </div>
+            <div class="campo">
+              <label for="ev-ate">Termina em <small>(opcional)</small></label>
+              <input id="ev-ate" name="ate" type="date">
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="campo">
+          <legend class="campo__rotulo">Avisar no WhatsApp</legend>
+          <div class="chips" id="ev-avisos" role="group" aria-label="Avisar"></div>
+          <p class="dica" id="ev-avisos-dica"></p>
+        </fieldset>
+
+        <div class="campo">
+          <label for="ev-notas">Notas <small>(opcional)</small></label>
+          <textarea id="ev-notas" name="notas" rows="2" maxlength="2000" placeholder="Endereço, o que levar…"></textarea>
+        </div>
+      </div>
+
+      <footer class="folha__rodape">
+        <div class="apagar" id="ev-apagar-area" hidden>
+          <button class="btn btn--perigo" type="button" id="ev-apagar">Apagar</button>
+          <div class="apagar__confirma" id="ev-apagar-confirma" hidden>
+            <span>Apagar?</span>
+            <button class="btn btn--perigo" type="button" data-apagar="dia" id="ev-apagar-dia">Só este dia</button>
+            <button class="btn btn--perigo" type="button" data-apagar="tudo" id="ev-apagar-tudo">Apagar</button>
+            <button class="btn btn--texto" type="button" data-apagar="nao">Cancelar</button>
+          </div>
+        </div>
+        <button class="btn btn--claro" type="submit">Salvar</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+    <span class="toast__texto" id="toast-texto"></span>
+    <button class="toast__acao" type="button" id="toast-acao" hidden></button>
+  </div>
+
+  <script src="app/datas.js"></script>
+  <script src="app/interpretar.js"></script>
+  <script src="app/app.js"></script>
 </body>
 </html>

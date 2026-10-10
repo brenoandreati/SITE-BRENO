@@ -1,0 +1,10 @@
+// Publicação no Cloudflare (Workers com arquivos estáticos).
+// Para publicar: npx wrangler deploy
+{
+  "name": "site-breno",
+  "compatibility_date": "2026-10-08",
+  "workers_dev": true,
+  "assets": {
+    "directory": "."
+  }
+}
