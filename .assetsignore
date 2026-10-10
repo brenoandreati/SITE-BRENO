@@ -8,5 +8,6 @@ package.json
 package-lock.json
 wrangler.jsonc
 .assetsignore
+.gitignore
 .wrangler
 README.md
