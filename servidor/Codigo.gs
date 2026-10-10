@@ -23,7 +23,7 @@ var FUSO = 'America/Sao_Paulo';
 // ---------------------------------------------------------------------------
 
 var VERSAO = 1;
-var SENHA_EXEMPLO = 'troque-esta-senha';
+var SENHA_EXEMPLO = ['troque', 'esta', 'senha'].join('-'); // escrito assim para não mudar junto se você usar "substituir" na senha
 var COLUNAS = ['id', 'titulo', 'data', 'hora', 'horaFim', 'repete', 'cada', 'dias', 'ate', 'avisos', 'notas', 'excecoes', 'atualizado', 'apagado'];
 var COLUNAS_ENVIADOS = ['chave', 'quando', 'situacao'];
 var ABA_AGENDA = 'Agenda';
