@@ -436,6 +436,53 @@ code {
 }
 .toast:not(:has(.toast__acao:not([hidden]))) { padding-right: 18px; }
 
+/* ============ Entrar / criar conta ============ */
+body.na-porta { padding-bottom: 0; }
+.porta {
+  min-height: 100vh; min-height: 100dvh;
+  display: grid; place-items: center;
+  padding: calc(32px + var(--topo-seguro)) 16px calc(40px + var(--baixo-seguro));
+}
+.porta__caixa { width: 100%; max-width: 420px; }
+.porta__marca { margin-bottom: 40px; }
+.porta__titulo { font-size: clamp(32px, 8.5vw, 46px); }
+.porta__texto { margin-top: 14px; color: var(--suave); font-size: 16px; text-wrap: pretty; }
+.porta__abas {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4px;
+  margin: 30px 0 20px; padding: 4px;
+  background: var(--painel); border: 1px solid var(--linha); border-radius: 14px;
+}
+.porta__abas button {
+  min-height: 44px; border: 0; border-radius: 10px; background: transparent;
+  color: var(--suave); font-size: 15px; font-weight: 600;
+  transition: background-color .15s ease, color .15s ease;
+}
+.porta__abas button[aria-selected="true"] { background: var(--texto); color: var(--fundo); }
+.porta__subtitulo { margin: 30px 0 4px; font-size: 21px; font-weight: 800; letter-spacing: -.02em; }
+.porta__link { display: flex; margin: 10px auto 0; font-size: 14px; }
+.porta__nota { text-align: center; }
+.btn--largo { width: 100%; margin-top: 4px; }
+.senha { position: relative; }
+.form .senha input { padding-right: 52px; }
+.senha__ver {
+  position: absolute; top: 50%; right: 4px; transform: translateY(-50%);
+  display: grid; place-items: center; width: 44px; height: 40px;
+  border: 0; border-radius: 8px; background: transparent; color: var(--suave);
+}
+.senha__ver:hover { color: var(--texto); }
+.senha__ver[aria-pressed="true"] { color: var(--azul-texto); }
+.senha__ver svg { width: 20px; height: 20px; }
+
+.legado {
+  margin-top: 18px; padding: 16px;
+  background: var(--azul-vidro); border: 1px solid rgba(91, 131, 255, .35); border-radius: var(--raio);
+  font-size: 15px;
+}
+.legado .botoes { margin-top: 12px; }
+.subform { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--linha); }
+.guia--perigo summary { color: var(--erro); }
+.guia--perigo .subform { border-top: 0; padding-top: 0; margin-top: 8px; }
+
 /* ============ Telas maiores ============ */
 @media (min-width: 480px) {
   .linha-campos { grid-template-columns: 1.4fr 1fr 1fr; }

@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const D = require('../app/datas.js');
+const D = require('../publico/app/datas.js');
 
 const evento = (dados) => D.normalizar({ id: 'x', titulo: 'Teste', ...dados });
 

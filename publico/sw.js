@@ -1,7 +1,7 @@
 // Agenda · funciona sem internet.
 // Mostra o que está guardado na hora e busca a versão nova por trás
 // (na próxima vez que abrir, já aparece atualizado).
-const CACHE = 'agenda-v1';
+const CACHE = 'agenda-v2';
 const ARQUIVOS = [
   './',
   'index.html',
@@ -34,8 +34,8 @@ self.addEventListener('fetch', (ev) => {
   const url = new URL(req.url);
   const mesmoSite = url.origin === self.location.origin;
   const fonte = url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com';
-  if (!mesmoSite && !fonte) return; // o servidor do Google nunca passa por aqui
-  if (mesmoSite && url.pathname.endsWith('.gs')) return;
+  if (!mesmoSite && !fonte) return;
+  if (mesmoSite && url.pathname.startsWith('/api/')) return; // a agenda da conta nunca vai para o cache
 
   ev.respondWith(
     caches.open(CACHE).then(async (cache) => {

@@ -1,6 +1,7 @@
 /* Agenda · tela
- * Guarda tudo neste aparelho (localStorage) e, se conectado ao servidor do
- * Google (servidor/Codigo.gs), sincroniza e deixa os avisos com o servidor.
+ * Cada pessoa entra com a própria conta (servidor em worker/). A agenda fica
+ * guardada neste aparelho, separada por conta, e sincroniza com o servidor:
+ * o app manda o que mudou aqui e recebe o que mudou nos outros aparelhos.
  */
 (function () {
   'use strict';
@@ -8,11 +9,13 @@
   var D = window.AgendaDatas;
   var I = window.AgendaInterpretar;
 
-  var CHAVES = { eventos: 'agenda.eventos', conexao: 'agenda.conexao', prefs: 'agenda.prefs' };
   var AVISOS = [[0, 'Na hora'], [15, '15 min antes'], [30, '30 min antes'], [60, '1 hora antes'], [120, '2 horas antes'],
     [1440, '1 dia antes'], [2880, '2 dias antes'], [10080, '1 semana antes']];
   var AVISO_PADRAO = [1440, 60];
   var LETRAS = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+  var RODADAS_SENHA = 250000;
+  var CHAVE_SESSAO = 'agenda.sessao';
+  var CHAVE_ANTIGA = 'agenda.eventos'; // agenda de antes das contas (fica só no aparelho)
 
   // ---------- armazenamento ----------
   function ler(chave, padrao) {
@@ -29,24 +32,46 @@
       else localStorage.setItem(chave, JSON.stringify(valor));
     } catch (e) { /* modo privado: segue só na memória */ }
   }
-  function lerEventos() {
-    var lista = ler(CHAVES.eventos, []);
+  function lerEventos(chave) {
+    var lista = ler(chave, []);
     return (Array.isArray(lista) ? lista : []).map(D.normalizar).filter(function (e) { return e.id; });
   }
 
+  // { token, usuario: { id, nome, email, fuso } }
+  var sessao = ler(CHAVE_SESSAO, null);
+  if (!sessao || !sessao.token || !sessao.usuario || !sessao.usuario.id) sessao = null;
+
   var estado = {
-    eventos: lerEventos(),
-    conexao: ler(CHAVES.conexao, null),
-    prefs: Object.assign({ avisoPadrao: AVISO_PADRAO, pendente: false, ultimaSinc: '' }, ler(CHAVES.prefs, {})),
+    eventos: [],
+    cursor: 0,        // última versão recebida do servidor
+    pendentes: {},    // ids mudados aqui e ainda não enviados
+    config: null,     // avisos no WhatsApp (vem do servidor)
+    ultimoEnvio: null,
     aba: 'agenda',
     diasLista: 30,
     mesCal: '',
     diaSel: '',
     consulta: '',
-    sinc: 'local',
-    sincMsg: '',
-    remoto: null
+    sinc: 'ok',
+    sincMsg: ''
   };
+
+  // Cada conta tem as suas chaves no localStorage
+  function chave(nome) { return 'agenda.u.' + sessao.usuario.id + '.' + nome; }
+  function carregarDaConta() {
+    estado.eventos = lerEventos(chave('eventos'));
+    estado.cursor = +ler(chave('cursor'), 0) || 0;
+    estado.pendentes = ler(chave('pendentes'), {}) || {};
+    var c = ler(chave('conta'), null) || {};
+    estado.config = c.config || null;
+    estado.ultimoEnvio = c.ultimoEnvio || null;
+  }
+  function apagarDaConta() {
+    ['eventos', 'cursor', 'pendentes', 'conta'].forEach(function (n) { gravar(chave(n), null); });
+  }
+  function avisoPadrao() { return estado.config ? estado.config.avisoPadrao : AVISO_PADRAO; }
+  function temWhats() { return !!(estado.config && estado.config.whatsapp.numero && estado.config.whatsapp.chave); }
+  function temPendentes() { return Object.keys(estado.pendentes).length > 0; }
 
   // ---------- utilidades ----------
   function $(s, el) { return (el || document).querySelector(s); }
@@ -104,8 +129,10 @@
 
   // ---------- alterações ----------
   function salvarLocal() {
-    gravar(CHAVES.eventos, estado.eventos);
-    gravar(CHAVES.prefs, estado.prefs);
+    if (!sessao) return;
+    gravar(chave('eventos'), estado.eventos);
+    gravar(chave('cursor'), estado.cursor);
+    gravar(chave('pendentes'), estado.pendentes);
   }
 
   function guardar(dados) {
@@ -117,7 +144,7 @@
       return e;
     });
     if (!achou) estado.eventos.push(e);
-    if (estado.conexao) estado.prefs.pendente = true;
+    estado.pendentes[e.id] = true;
     salvarLocal();
     renderizar();
     agendarSinc();
@@ -220,7 +247,7 @@
       if (r.ate) tags.push('até ' + esc(D.curta(r.ate)));
     }
     tags.push(r.hora ? esc(r.hora + (r.horaFim ? '–' + r.horaFim : '')) : 'dia todo');
-    if (estado.prefs.avisoPadrao.length) tags.push(icone('sino') + esc(cap(avisosTexto(estado.prefs.avisoPadrao))));
+    if (avisoPadrao().length) tags.push(icone('sino') + esc(cap(avisosTexto(avisoPadrao()))));
     el.innerHTML =
       '<p class="previa__titulo">' + (r.titulo ? esc(r.titulo) : '<span class="previa__falta">Falta dizer o que é</span>') + '</p>' +
       '<p class="previa__tags">' + tags.map(function (t) { return '<span>' + t + '</span>'; }).join('') + '</p>' +
@@ -232,7 +259,7 @@
     var r = I.interpretar(campoRapido.value.trim(), hoje(), agoraHora());
     return {
       titulo: r.titulo, data: r.data, hora: r.hora, horaFim: r.horaFim, repete: r.repete, cada: r.cada,
-      dias: r.dias, ate: r.ate, avisos: estado.prefs.avisoPadrao.slice(), notas: ''
+      dias: r.dias, ate: r.ate, avisos: avisoPadrao().slice(), notas: ''
     };
   }
 
@@ -323,7 +350,7 @@
     var repete = dados.repete || 'nao';
     $$('input[name="repete"]', form).forEach(function (r) { r.checked = r.value === repete; });
     formDias = (dados.dias || []).slice();
-    formAvisos = (dados.avisos || estado.prefs.avisoPadrao).slice();
+    formAvisos = (dados.avisos || avisoPadrao()).slice();
     montarOpcoesCada(repete, dados.cada || 1);
     montarChipsAvisos($('#ev-avisos'), formAvisos);
 
@@ -377,7 +404,7 @@
     form.hora.disabled = diaTodo;
     form.horaFim.disabled = diaTodo;
     var dicaAviso = '';
-    if (!estado.conexao) dicaAviso = 'Os avisos chegam no WhatsApp depois que você conectar ao Google, em Ajustes.';
+    if (!temWhats()) dicaAviso = 'Para receber os avisos no WhatsApp, configure o seu número em Ajustes.';
     else if (diaTodo || !form.hora.value) dicaAviso = 'Sem horário, o aviso conta a partir das 9h do dia.';
     $('#ev-avisos-dica').textContent = dicaAviso;
     $('#ev-apagar-dia').hidden = !(edicao && edicao.dia && repete !== 'nao');
@@ -646,52 +673,56 @@
     renderBuscar();
   });
 
-  // ---------- servidor do Google ----------
-  function urlValida(url) { return /^https:\/\/script\.google\.com\/.+\/exec\/?$/.test(url); }
-
-  function chamar(acao, dados, conexao) {
-    conexao = conexao || estado.conexao;
-    var ctrl = window.AbortController ? new AbortController() : null;
-    var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 30000);
-    var corpo = JSON.stringify(Object.assign({ acao: acao, chave: conexao.chave }, dados || {}));
-    // text/plain evita a checagem extra (CORS) que o Google não responde
-    return fetch(conexao.url, { method: 'POST', body: corpo, redirect: 'follow', signal: ctrl ? ctrl.signal : undefined })
-      .then(function (r) {
-        return r.text().then(function (t) {
-          try {
-            return JSON.parse(t);
-          } catch (e) {
-            throw Object.assign(new Error('O Google não respondeu como esperado. Confira se a implantação está como “Qualquer pessoa”.'), { codigo: 'resposta' });
+  // ---------- servidor ----------
+  function api(metodo, caminho, dados) {
+    var headers = { 'content-type': 'application/json' };
+    if (sessao) headers.authorization = 'Bearer ' + sessao.token;
+    return fetch('api/' + caminho, {
+      method: metodo,
+      headers: headers,
+      body: metodo === 'GET' ? undefined : JSON.stringify(dados || {}),
+      cache: 'no-store'
+    }).then(function (r) {
+      return r.json().catch(function () { return { ok: false, erro: 'O servidor respondeu algo inesperado. Tente de novo.' }; })
+        .then(function (json) {
+          if (!json.ok) {
+            var err = Object.assign(new Error(json.erro || 'Erro no servidor.'), { codigo: json.codigo || 'servidor', status: r.status });
+            if (json.codigo === 'sessao' && sessao) sessaoTerminou();
+            throw err;
           }
+          return json;
         });
-      })
-      .then(function (json) {
-        if (!json.ok) throw Object.assign(new Error(json.erro || 'Erro no servidor.'), { codigo: json.codigo || 'servidor' });
-        return json;
-      })
-      .catch(function (err) {
-        if (err.codigo) throw err;
-        var offline = navigator.onLine === false;
-        throw Object.assign(new Error(offline
-          ? 'Sem internet. As mudanças ficam guardadas aqui e vão quando a internet voltar.'
-          : 'Não consegui falar com o Google. Confira o endereço e se a implantação está como “Qualquer pessoa”.'), { codigo: offline ? 'offline' : 'rede' });
-      })
-      .finally(function () { clearTimeout(timer); });
+    }, function () {
+      var offline = navigator.onLine === false;
+      throw Object.assign(new Error(offline
+        ? 'Sem internet. As mudanças ficam guardadas aqui e vão quando a internet voltar.'
+        : 'Não consegui falar com o servidor. Tente de novo em instantes.'), { codigo: offline ? 'offline' : 'rede' });
+    });
+  }
+
+  // A senha sai do aparelho já embaralhada (PBKDF2, com o e-mail como sal)
+  function senhaDoApp(email, senha) {
+    var cod = new TextEncoder();
+    return crypto.subtle.importKey('raw', cod.encode(senha), 'PBKDF2', false, ['deriveBits']).then(function (k) {
+      return crypto.subtle.deriveBits({
+        name: 'PBKDF2', hash: 'SHA-256', iterations: RODADAS_SENHA,
+        salt: cod.encode('agenda-v1:' + email.trim().toLowerCase())
+      }, k, 256);
+    }).then(function (bits) {
+      return Array.prototype.map.call(new Uint8Array(bits), function (b) { return (b < 16 ? '0' : '') + b.toString(16); }).join('');
+    });
   }
 
   var sincronizando = false, deNovo = false, sincTimer = null, ultimaTentativa = 0;
 
   function agendarSinc(ms) {
-    if (!estado.conexao) return;
+    if (!sessao) return;
     clearTimeout(sincTimer);
-    sincTimer = setTimeout(sincronizar, ms == null ? 800 : ms);
+    sincTimer = setTimeout(sincronizar, ms == null ? 600 : ms);
   }
 
   function sincronizar() {
-    if (!estado.conexao) {
-      mostrarSinc('local');
-      return Promise.resolve();
-    }
+    if (!sessao) return Promise.resolve();
     if (sincronizando) {
       deNovo = true;
       return Promise.resolve();
@@ -699,63 +730,276 @@
     sincronizando = true;
     ultimaTentativa = Date.now();
     mostrarSinc('sincronizando');
-    var enviados = estado.eventos.slice();
-    return chamar('sincronizar', { eventos: enviados })
+    // O que mudar enquanto o pedido está no ar fica para a próxima rodada
+    var enviando = estado.pendentes;
+    estado.pendentes = {};
+    var alterados = Object.keys(enviando).map(porId).filter(Boolean);
+    var conta = sessao.usuario.id;
+    return api('POST', 'sincronizar', { cursor: estado.cursor, alterados: alterados })
       .then(function (r) {
-        var mudouNoMeioTempo = estado.eventos.length !== enviados.length ||
-          estado.eventos.some(function (e, i) { return e !== enviados[i]; });
-        estado.eventos = D.limparApagados(D.mesclar(estado.eventos, r.eventos.map(D.normalizar)), hoje(), 60);
-        estado.prefs.pendente = mudouNoMeioTempo;
-        estado.prefs.ultimaSinc = new Date().toISOString();
+        if (!sessao || sessao.usuario.id !== conta) return;
+        var recebidos = r.eventos.concat(r.rejeitados).map(D.normalizar);
+        estado.eventos = D.limparApagados(D.mesclar(estado.eventos, recebidos), hoje(), 90);
+        estado.cursor = r.cursor;
         salvarLocal();
         renderizar();
         mostrarSinc('ok');
-        if (mudouNoMeioTempo) deNovo = true;
+        if (temPendentes()) deNovo = true;
       })
       .catch(function (err) {
-        estado.prefs.pendente = true;
+        if (!sessao || sessao.usuario.id !== conta) return;
+        Object.keys(enviando).forEach(function (id) { estado.pendentes[id] = true; });
         salvarLocal();
         mostrarSinc(err.codigo === 'offline' ? 'offline' : 'erro', err.message);
       })
       .then(function () {
         sincronizando = false;
-        if (deNovo) {
+        if (deNovo && sessao) {
           deNovo = false;
           agendarSinc(300);
         }
       });
   }
 
-  function mostrarSinc(situacao, msg) {
+  function mostrarSinc(situacao, mensagem) {
     estado.sinc = situacao;
-    estado.sincMsg = msg || '';
-    var textos = {
-      local: 'Só neste aparelho',
-      sincronizando: 'Sincronizando…',
-      ok: 'Sincronizado',
-      offline: 'Sem internet',
-      erro: 'Não sincronizou'
-    };
+    estado.sincMsg = mensagem || '';
+    var textos = { sincronizando: 'Sincronizando…', ok: 'Sincronizado', offline: 'Sem internet', erro: 'Não sincronizou' };
     var el = $('#sinc');
     el.dataset.estado = situacao;
     $('.sinc__texto', el).textContent = textos[situacao];
-    el.title = msg || (situacao === 'ok' ? 'Computador e celular com a mesma agenda.' : '');
+    el.title = mensagem || (situacao === 'ok' ? 'Computador e celular com a mesma agenda.' : '');
   }
 
   $('#sinc').addEventListener('click', function () {
-    if (!estado.conexao) {
-      location.hash = '#ajustes';
-      return;
-    }
     if (estado.sinc === 'erro' || estado.sinc === 'offline') mostrarToast(estado.sincMsg);
     sincronizar();
   });
 
+  // Dados da conta vindos do servidor (nome, e-mail, avisos)
+  function aplicarConta(r) {
+    if (!sessao) return;
+    if (r.usuario) {
+      sessao.usuario = r.usuario;
+      gravar(CHAVE_SESSAO, sessao);
+    }
+    if (r.config) estado.config = r.config;
+    if ('ultimoEnvio' in r) estado.ultimoEnvio = r.ultimoEnvio;
+    gravar(chave('conta'), { config: estado.config, ultimoEnvio: estado.ultimoEnvio });
+  }
+  function atualizarConta() {
+    return api('GET', 'conta').then(function (r) {
+      aplicarConta(r);
+      if (estado.aba === 'ajustes') renderAjustes();
+    }, function () { /* fica com o que estava guardado */ });
+  }
+
+  // ---------- entrar / criar conta ----------
+  function msg(id, texto, tipo) {
+    var el = $(id);
+    el.textContent = texto || '';
+    el.dataset.tipo = tipo || '';
+  }
+
+  function mostrarPorta(aviso) {
+    $('#app').hidden = true;
+    $('#porta').hidden = false;
+    document.body.classList.add('na-porta');
+    trocarPorta('entrar');
+    if (aviso) msg('#en-msg', aviso, 'erro');
+    document.title = 'Agenda · Entrar';
+  }
+  function mostrarApp() {
+    $('#porta').hidden = true;
+    $('#app').hidden = false;
+    document.body.classList.remove('na-porta');
+    document.title = 'Agenda';
+    irPara(location.hash.slice(1));
+    atualizarPrevia();
+  }
+  function trocarPorta(qual) {
+    $('#form-entrar').hidden = qual !== 'entrar';
+    $('#form-cadastro').hidden = qual !== 'cadastro';
+    $('#form-recuperar').hidden = qual !== 'recuperar';
+    $('.porta__abas').hidden = qual === 'recuperar';
+    $('#aba-entrar').setAttribute('aria-selected', String(qual === 'entrar'));
+    $('#aba-cadastro').setAttribute('aria-selected', String(qual === 'cadastro'));
+  }
+  $('#aba-entrar').addEventListener('click', function () { trocarPorta('entrar'); $('#en-email').focus(); });
+  $('#aba-cadastro').addEventListener('click', function () { trocarPorta('cadastro'); $('#ca-nome').focus(); });
+  $('#porta').addEventListener('click', function (ev) {
+    var b = ev.target.closest('[data-ver-senha]');
+    if (!b) return;
+    var campo = b.parentNode.querySelector('input');
+    var mostrar = campo.type === 'password';
+    campo.type = mostrar ? 'text' : 'password';
+    b.setAttribute('aria-pressed', String(mostrar));
+    b.setAttribute('aria-label', mostrar ? 'Esconder senha' : 'Mostrar senha');
+  });
+
+  function ocupado(formEl, sim) {
+    $$('button, input', formEl).forEach(function (el) { el.disabled = sim; });
+  }
+
+  function iniciarSessao(r) {
+    sessao = { token: r.token, usuario: r.usuario };
+    gravar(CHAVE_SESSAO, sessao);
+    carregarDaConta();
+    aplicarConta(r);
+    estado.diaSel = '';
+    estado.mesCal = '';
+    estado.consulta = '';
+    $('#busca-texto').value = '';
+    $$('.porta form').forEach(function (f) { f.reset(); });
+    ['#en-msg', '#ca-msg', '#re-msg'].forEach(function (id) { msg(id, ''); });
+    mostrarApp();
+    oferecerAgendaAntiga();
+    sincronizar();
+  }
+
+  // Ao sair, a agenda some deste aparelho (continua guardada na conta)
+  function sairDaConta() {
+    if (temPendentes() && !confirm('Algumas mudanças ainda não chegaram ao servidor e vão se perder. Sair mesmo assim?')) return;
+    api('POST', 'sair').catch(function () { /* sai mesmo sem internet */ });
+    apagarDaConta();
+    sessao = null;
+    gravar(CHAVE_SESSAO, null);
+    estado.eventos = [];
+    estado.config = null;
+    mostrarPorta();
+  }
+
+  // Sessão vencida ou senha trocada em outro aparelho: pede para entrar de novo,
+  // mas mantém o que estava guardado aqui (e as mudanças ainda não enviadas)
+  function sessaoTerminou() {
+    var email = sessao.usuario.email;
+    sessao = null;
+    gravar(CHAVE_SESSAO, null);
+    fecharFolha();
+    mostrarPorta('Sua sessão terminou. Entre de novo.');
+    $('#en-email').value = email;
+  }
+
+  $('#form-entrar').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var f = ev.target, email = f.email.value.trim(), senha = f.senha.value;
+    if (!email || !senha) return msg('#en-msg', 'Preencha o e-mail e a senha.', 'erro');
+    msg('#en-msg', 'Entrando…');
+    ocupado(f, true);
+    senhaDoApp(email, senha).then(function (s) {
+      return api('POST', 'entrar', { email: email, senha: s });
+    }).then(iniciarSessao).catch(function (err) {
+      msg('#en-msg', err.message, 'erro');
+    }).then(function () { ocupado(f, false); });
+  });
+
+  $('#form-cadastro').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var f = ev.target, nome = f.nome.value.trim(), email = f.email.value.trim(), senha = f.senha.value;
+    if (!nome) return msg('#ca-msg', 'Diga o seu nome.', 'erro');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return msg('#ca-msg', 'Confira o e-mail.', 'erro');
+    if (senha.length < 8) return msg('#ca-msg', 'A senha precisa ter pelo menos 8 caracteres.', 'erro');
+    msg('#ca-msg', 'Criando a sua conta…');
+    ocupado(f, true);
+    var fuso = 'America/Sao_Paulo';
+    try { fuso = Intl.DateTimeFormat().resolvedOptions().timeZone || fuso; } catch (e) { /* padrão */ }
+    senhaDoApp(email, senha).then(function (s) {
+      return api('POST', 'cadastro', { nome: nome, email: email, senha: s, fuso: fuso });
+    }).then(function (r) {
+      iniciarSessao(r);
+      mostrarToast('Conta criada. Boas-vindas, ' + r.usuario.nome.split(' ')[0] + '!');
+    }).catch(function (err) {
+      msg('#ca-msg', err.message, 'erro');
+      if (err.codigo === 'existe') $('#en-email').value = email;
+    }).then(function () { ocupado(f, false); });
+  });
+
+  // Esqueci a senha: código pelo WhatsApp
+  var formRecuperar = $('#form-recuperar');
+  $('#esqueci').addEventListener('click', function () {
+    formRecuperar.reset();
+    $('#re-passo2').hidden = true;
+    $('#re-botao').textContent = 'Mandar código pelo WhatsApp';
+    formRecuperar.email.value = $('#en-email').value;
+    msg('#re-msg', '');
+    trocarPorta('recuperar');
+    formRecuperar.email.focus();
+  });
+  $('#re-voltar').addEventListener('click', function () { trocarPorta('entrar'); });
+  formRecuperar.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var f = formRecuperar, email = f.email.value.trim();
+    if (!email) return msg('#re-msg', 'Digite o e-mail da conta.', 'erro');
+    var passo2 = !$('#re-passo2').hidden;
+    if (!passo2) {
+      msg('#re-msg', 'Mandando…');
+      ocupado(f, true);
+      api('POST', 'recuperar', { email: email }).then(function (r) {
+        $('#re-passo2').hidden = false;
+        $('#re-botao').textContent = 'Salvar senha nova';
+        msg('#re-msg', 'Mandamos o código para o WhatsApp terminado em ' + r.final + '. Pode levar alguns minutos.', 'ok');
+        setTimeout(function () { f.codigo.focus(); }, 50);
+      }).catch(function (err) {
+        msg('#re-msg', err.message, 'erro');
+      }).then(function () { ocupado(f, false); });
+      return;
+    }
+    var codigo = f.codigo.value.replace(/\D/g, ''), senha = f.senha.value;
+    if (codigo.length !== 6) return msg('#re-msg', 'O código tem 6 números.', 'erro');
+    if (senha.length < 8) return msg('#re-msg', 'A senha nova precisa ter pelo menos 8 caracteres.', 'erro');
+    msg('#re-msg', 'Salvando…');
+    ocupado(f, true);
+    senhaDoApp(email, senha).then(function (s) {
+      return api('POST', 'redefinir', { email: email, codigo: codigo, nova: s });
+    }).then(function (r) {
+      iniciarSessao(r);
+      mostrarToast('Senha nova salva.');
+    }).catch(function (err) {
+      msg('#re-msg', err.message, 'erro');
+    }).then(function () { ocupado(f, false); });
+  });
+
+  // Agenda de antes das contas, guardada só neste aparelho
+  function oferecerAgendaAntiga() {
+    var antigos = lerEventos(CHAVE_ANTIGA).filter(function (e) { return !e.apagado; });
+    var el = $('#legado');
+    if (!antigos.length) {
+      el.hidden = true;
+      return;
+    }
+    el.innerHTML = '<p><strong>' + antigos.length + (antigos.length === 1 ? ' compromisso guardado' : ' compromissos guardados') +
+      ' neste aparelho</strong> de antes das contas. Quer levar para a sua conta?</p>' +
+      '<div class="botoes"><button class="btn btn--claro" type="button" data-legado="levar">Levar para a minha conta</button>' +
+      '<button class="btn btn--texto" type="button" data-legado="descartar">Não, descartar</button></div>';
+    el.hidden = false;
+  }
+  $('#legado').addEventListener('click', function (ev) {
+    var b = ev.target.closest('[data-legado]');
+    if (!b) return;
+    if (b.dataset.legado === 'levar') {
+      var n = 0;
+      lerEventos(CHAVE_ANTIGA).forEach(function (e) {
+        if (e.apagado || !e.titulo || !e.data) return;
+        var atual = porId(e.id);
+        if (atual && !atual.apagado) return;
+        estado.eventos = estado.eventos.filter(function (x) { return x.id !== e.id; }).concat([D.normalizar(Object.assign({}, e, { atualizado: new Date().toISOString() }))]);
+        estado.pendentes[e.id] = true;
+        n++;
+      });
+      salvarLocal();
+      renderizar();
+      sincronizar();
+      mostrarToast(n + (n === 1 ? ' compromisso levado' : ' compromissos levados') + ' para a sua conta.');
+    }
+    // Agenda antiga e conexão com o servidor do Google saem deste aparelho
+    ['agenda.eventos', 'agenda.conexao', 'agenda.prefs'].forEach(function (k) { gravar(k, null); });
+    $('#legado').hidden = true;
+  });
+
   // ---------- Ajustes ----------
-  var formConexao = $('#form-conexao');
   var formAvisosCfg = $('#form-avisos');
   var padraoCfg = [];
-  var configNaTela = false; // os campos já mostram a configuração do servidor
+  var configNaTela = false; // os campos já mostram a configuração (não apagar o que a pessoa digita)
 
   (function montarHorasResumo() {
     var html = '';
@@ -764,114 +1008,40 @@
     $('#av-resumo-hora').value = '7';
   })();
 
-  function msg(id, texto, tipo) {
-    var el = $(id);
-    el.textContent = texto || '';
-    el.dataset.tipo = tipo || '';
-  }
-
   function renderAjustes() {
-    var c = estado.conexao;
-    formConexao.url.value = c ? c.url : formConexao.url.value;
-    formConexao.senha.value = c ? c.chave : formConexao.senha.value;
-    $('#cx-conectar').textContent = c ? 'Salvar e conectar' : 'Conectar';
-    $('#cx-sincronizar').hidden = !c;
-    $('#cx-desconectar').hidden = !c;
-    $('#guia-google').open = !c && !formConexao.url.value;
-    $('#conexao-texto').textContent = c
-      ? 'Conectado ao seu Google. Computador e celular ficam com a mesma agenda.' + (estado.prefs.ultimaSinc ? ' Última sincronização: ' + new Date(estado.prefs.ultimaSinc).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) + '.' : '')
-      : 'Hoje a agenda fica só neste aparelho. Conecte ao seu Google para ter a mesma agenda no computador e no celular e receber os avisos no WhatsApp.';
-
-    $('#avisos-bloqueio').hidden = !!c;
-    $$('input, select, button', formAvisosCfg).forEach(function (el) { el.disabled = !c; });
-    if (!c) {
-      padraoCfg = estado.prefs.avisoPadrao.slice();
+    if (!sessao) return;
+    var u = sessao.usuario;
+    $('#conta-texto').innerHTML = '<strong>' + esc(u.nome) + '</strong><br>' + esc(u.email);
+    $$('input[name="usuario"]').forEach(function (el) { el.value = u.email; });
+    if (!configNaTela && estado.config) preencherConfig();
+    else if (!estado.config) {
+      padraoCfg = AVISO_PADRAO.slice();
       montarChipsAvisos($('#av-padrao'), padraoCfg);
-      $$('#av-padrao button').forEach(function (b) { b.disabled = true; });
-      return;
     }
-    if (!estado.remoto) carregarConfig();
-    else if (!configNaTela) preencherConfig(estado.remoto);
+    mostrarUltimoEnvio();
   }
 
-  // silencioso: não mexe na mensagem (para não apagar o resultado do teste)
-  function carregarConfig(silencioso) {
-    if (!silencioso) msg('#av-msg', 'Carregando…');
-    return chamar('ping').then(function (r) {
-      estado.remoto = r;
-      preencherConfig(r);
-      if (!silencioso) msg('#av-msg', '');
-    }).catch(function (err) {
-      if (!silencioso) msg('#av-msg', err.message, 'erro');
-    });
-  }
-
-  function preencherConfig(r) {
+  function preencherConfig() {
     configNaTela = true;
-    var cfg = r.config;
-    var f = formAvisosCfg;
+    var cfg = estado.config, f = formAvisosCfg;
     f.numero.value = cfg.whatsapp.numero || '';
     f.chave.value = cfg.whatsapp.chave || '';
-    f.emailAtivo.checked = cfg.email.ativo;
-    f.email.value = cfg.email.endereco || '';
-    f.email.placeholder = r.email || 'voce@gmail.com';
     f.resumoAtivo.checked = cfg.resumo.ativo;
     f.resumoHora.value = String(cfg.resumo.hora);
     padraoCfg = (cfg.avisoPadrao || AVISO_PADRAO).slice();
-    estado.prefs.avisoPadrao = padraoCfg.slice();
-    salvarLocal();
     montarChipsAvisos($('#av-padrao'), padraoCfg);
-    var u = r.ultimoEnvio;
-    $('#av-ultimo').textContent = u
-      ? 'Último envio: ' + u.quando.split(' ')[0].split('-').reverse().join('/') + ' às ' + u.quando.split(' ')[1] +
-        (u.whatsapp ? ' · WhatsApp: ' + (u.whatsapp === 'ok' ? 'ok' : u.whatsapp) : '') +
-        (u.email ? ' · E-mail: ' + (u.email === 'ok' ? 'ok' : u.email) : '') +
-        (u.respostaWhats ? ' · Resposta do CallMeBot: “' + u.respostaWhats + '”' : '')
-      : '';
   }
 
-  formConexao.addEventListener('submit', function (ev) {
-    ev.preventDefault();
-    var url = formConexao.url.value.trim();
-    var chave = formConexao.senha.value;
-    if (/\/dev\/?$/.test(url)) return msg('#cx-msg', 'Esse é o endereço de teste (termina em /dev). Use o “URL do app da Web”, que termina em /exec.', 'erro');
-    if (!urlValida(url)) return msg('#cx-msg', 'O endereço deve começar com https://script.google.com/ e terminar em /exec.', 'erro');
-    if (!chave) return msg('#cx-msg', 'Digite a senha que você colocou no código.', 'erro');
-    var conexao = { url: url, chave: chave };
-    msg('#cx-msg', 'Conectando…');
-    chamar('ping', {}, conexao).then(function (r) {
-      estado.conexao = conexao;
-      estado.remoto = r;
-      configNaTela = false;
-      gravar(CHAVES.conexao, conexao);
-      msg('#cx-msg', 'Conectado! Agora a agenda deste aparelho também fica no seu Google.', 'ok');
-      return sincronizar();
-    }).then(function () {
-      renderAjustes();
-    }).catch(function (err) {
-      msg('#cx-msg', err.message, 'erro');
-    });
-  });
-
-  $('#cx-sincronizar').addEventListener('click', function () {
-    msg('#cx-msg', 'Sincronizando…');
-    sincronizar().then(function () {
-      if (estado.sinc === 'ok') msg('#cx-msg', 'Tudo sincronizado.', 'ok');
-      else msg('#cx-msg', estado.sincMsg, 'erro');
-      renderAjustes();
-    });
-  });
-
-  $('#cx-desconectar').addEventListener('click', function () {
-    estado.conexao = null;
-    estado.remoto = null;
-    configNaTela = false;
-    gravar(CHAVES.conexao, null);
-    formConexao.reset();
-    msg('#cx-msg', 'Desconectado. A agenda continua neste aparelho.', 'ok');
-    mostrarSinc('local');
-    renderAjustes();
-  });
+  function mostrarUltimoEnvio() {
+    var u = estado.ultimoEnvio;
+    if (!u || !u.quando) {
+      $('#av-ultimo').textContent = '';
+      return;
+    }
+    var quando = new Date(u.quando).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+    $('#av-ultimo').textContent = 'Último envio: ' + quando + ' · WhatsApp: ' + u.whatsapp +
+      (u.respostaWhats ? ' · Resposta do CallMeBot: “' + u.respostaWhats + '”' : '');
+  }
 
   $('#av-padrao').addEventListener('click', function (ev) {
     var b = ev.target.closest('[data-aviso]');
@@ -882,34 +1052,23 @@
     b.setAttribute('aria-pressed', String(i < 0));
   });
 
-  function numeroWhats(v) {
-    var d = String(v || '').replace(/\D/g, '');
-    if (!d) return '';
-    if (d.length === 10 || d.length === 11) d = '55' + d; // só DDD + número: é do Brasil
-    return d;
-  }
-
-  function configDoForm() {
-    var f = formAvisosCfg;
-    return {
-      whatsapp: { numero: numeroWhats(f.numero.value), chave: f.chave.value.trim() },
-      email: { ativo: f.emailAtivo.checked, endereco: f.email.value.trim() || (f.emailAtivo.checked ? f.email.placeholder : '') },
-      resumo: { ativo: f.resumoAtivo.checked, hora: +f.resumoHora.value },
-      avisoPadrao: padraoCfg.slice()
-    };
-  }
-
   function salvarConfig() {
-    var cfg = configDoForm();
-    if (cfg.whatsapp.numero && cfg.whatsapp.numero.length < 12) {
-      return Promise.reject(new Error('Confira o número: precisa ter DDD (ex.: 11 91234-5678).'));
-    }
-    if (cfg.whatsapp.numero && !cfg.whatsapp.chave) {
-      return Promise.reject(new Error('Falta a chave do CallMeBot. Veja “Como pegar a chave”.'));
-    }
-    return chamar('salvarConfig', { config: cfg }).then(function (r) {
-      estado.remoto = Object.assign({}, estado.remoto, { config: r.config });
-      preencherConfig(estado.remoto);
+    var f = formAvisosCfg;
+    var numero = f.numero.value.replace(/\D/g, '');
+    if (numero && numero.length < 10) return Promise.reject(new Error('Confira o número: precisa ter DDD (ex.: 11 91234-5678).'));
+    if (numero && !f.chave.value.trim()) return Promise.reject(new Error('Falta a chave do CallMeBot. Veja “Como pegar a chave”.'));
+    var fuso;
+    try { fuso = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) { /* o servidor usa o que já tem */ }
+    return api('POST', 'config', {
+      fuso: fuso,
+      config: {
+        whatsapp: { numero: numero, chave: f.chave.value.trim() },
+        resumo: { ativo: f.resumoAtivo.checked, hora: +f.resumoHora.value },
+        avisoPadrao: padraoCfg.slice()
+      }
+    }).then(function (r) {
+      aplicarConta(r);
+      preencherConfig();
       renderAgenda();
     });
   }
@@ -927,50 +1086,62 @@
   $('#av-testar').addEventListener('click', function () {
     msg('#av-msg', 'Salvando e mandando o teste…');
     salvarConfig().then(function () {
-      return chamar('testar');
+      return api('POST', 'testar');
     }).then(function (r) {
-      var res = r.resultado;
-      var partes = [];
-      if (res.whatsapp) partes.push(res.whatsapp === 'ok' ? 'WhatsApp enviado' : 'WhatsApp: ' + res.whatsapp);
-      if (res.email) partes.push(res.email === 'ok' ? 'e-mail enviado' : 'e-mail: ' + res.email);
-      msg('#av-msg', cap(partes.join(' · ')) + (res.ok ? '. Confira o celular.' : ''), res.ok ? 'ok' : 'erro');
-      return carregarConfig(true);
+      estado.ultimoEnvio = r.resultado;
+      aplicarConta({});
+      mostrarUltimoEnvio();
+      var ok = r.resultado.whatsapp === 'ok';
+      msg('#av-msg', ok ? 'Mensagem enviada. Confira o WhatsApp (pode levar alguns minutos).' : 'WhatsApp: ' + r.resultado.whatsapp, ok ? 'ok' : 'erro');
     }).catch(function (err) {
       msg('#av-msg', err.message, 'erro');
     });
   });
 
-  // Copiar o código do servidor
-  $('#copiar-codigo').addEventListener('click', function () {
-    fetch('servidor/Codigo.gs', { cache: 'no-store' }).then(function (r) {
-      if (!r.ok) throw new Error();
-      return r.text();
-    }).then(function (codigo) {
-      return navigator.clipboard.writeText(codigo).then(function () {
-        mostrarToast('Código copiado. Agora cole no script.google.com.');
-      }, function () {
-        mostrarCodigo(codigo);
-      });
-    }).catch(function () {
-      mostrarToast('Não consegui buscar o código. Abra o arquivo servidor/Codigo.gs do projeto.');
-    });
+  // Conta: sair, trocar senha, apagar
+  $('#conta-sair').addEventListener('click', sairDaConta);
+  $('#conta-senha').addEventListener('click', function () {
+    var f = $('#form-senha');
+    f.hidden = !f.hidden;
+    this.setAttribute('aria-expanded', String(!f.hidden));
+    msg('#se-msg', '');
+    if (!f.hidden) f.atual.focus();
   });
-  function mostrarCodigo(codigo) {
-    var area = $('#codigo-servidor');
-    if (!area) {
-      area = document.createElement('textarea');
-      area.id = 'codigo-servidor';
-      area.className = 'codigo';
-      area.readOnly = true;
-      area.rows = 8;
-      area.setAttribute('aria-label', 'Código do servidor');
-      $('#guia-google').appendChild(area);
-    }
-    area.value = codigo;
-    area.focus();
-    area.select();
-    mostrarToast('Selecione tudo e copie o código abaixo.');
-  }
+  $('#form-senha').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var f = ev.target, email = sessao.usuario.email;
+    if (f.nova.value.length < 8) return msg('#se-msg', 'A senha nova precisa ter pelo menos 8 caracteres.', 'erro');
+    msg('#se-msg', 'Salvando…');
+    ocupado(f, true);
+    Promise.all([senhaDoApp(email, f.atual.value), senhaDoApp(email, f.nova.value)]).then(function (s) {
+      return api('POST', 'senha', { atual: s[0], nova: s[1] });
+    }).then(function () {
+      f.reset();
+      msg('#se-msg', 'Senha trocada. Nos outros aparelhos, entre de novo com a senha nova.', 'ok');
+    }).catch(function (err) {
+      msg('#se-msg', err.message, 'erro');
+    }).then(function () { ocupado(f, false); });
+  });
+  $('#form-apagar').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var f = ev.target;
+    if (!f.senha.value) return msg('#ap-msg', 'Digite a sua senha.', 'erro');
+    if (!confirm('Apagar a conta e toda a agenda? Não dá para desfazer.')) return;
+    msg('#ap-msg', 'Apagando…');
+    ocupado(f, true);
+    senhaDoApp(sessao.usuario.email, f.senha.value).then(function (s) {
+      return api('POST', 'apagar-conta', { senha: s });
+    }).then(function () {
+      apagarDaConta();
+      sessao = null;
+      gravar(CHAVE_SESSAO, null);
+      f.reset();
+      mostrarPorta();
+      msg('#en-msg', 'Conta apagada.', 'ok');
+    }).catch(function (err) {
+      msg('#ap-msg', err.message, 'erro');
+    }).then(function () { ocupado(f, false); });
+  });
 
   // Instalar
   var pedidoInstalar = null;
@@ -1066,34 +1237,51 @@
     });
     if (aba === 'agenda') renderAgenda();
     if (aba === 'buscar') renderBuscar();
-    if (aba === 'ajustes') renderAjustes();
+    if (aba === 'ajustes') {
+      renderAjustes();
+      atualizarConta();
+    }
     if (mudou) window.scrollTo(0, 0);
   }
   window.addEventListener('hashchange', function () { irPara(location.hash.slice(1)); });
 
   // ---------- início ----------
   document.addEventListener('visibilitychange', function () {
-    if (document.visibilityState !== 'visible') return;
+    if (document.visibilityState !== 'visible' || !sessao) return;
     renderizar();
-    if (estado.conexao && Date.now() - ultimaTentativa > 30000) sincronizar();
+    if (Date.now() - ultimaTentativa > 30000) sincronizar();
   });
-  window.addEventListener('online', function () { if (estado.conexao) sincronizar(); });
+  window.addEventListener('online', function () { if (sessao) sincronizar(); });
+  // Outra aba deste navegador mudou a agenda ou saiu da conta
   window.addEventListener('storage', function (ev) {
-    if (ev.key === CHAVES.eventos) {
-      estado.eventos = lerEventos();
+    if (ev.key === CHAVE_SESSAO) {
+      var nova = ler(CHAVE_SESSAO, null);
+      if (!nova && sessao) {
+        sessao = null;
+        mostrarPorta();
+      } else if (nova && (!sessao || nova.usuario.id !== sessao.usuario.id)) {
+        location.reload();
+      }
+    } else if (sessao && ev.key === chave('eventos')) {
+      estado.eventos = lerEventos(chave('eventos'));
       renderizar();
     }
   });
   setInterval(function () {
-    if (document.visibilityState !== 'visible') return;
+    if (document.visibilityState !== 'visible' || !sessao) return;
     renderAgenda();
-    if (estado.conexao && Date.now() - ultimaTentativa > 180000) sincronizar();
+    if (Date.now() - ultimaTentativa > 120000) sincronizar();
   }, 60000);
 
-  irPara(location.hash.slice(1));
-  atualizarPrevia();
-  if (estado.conexao) sincronizar();
-  else mostrarSinc('local');
+  if (sessao) {
+    carregarDaConta();
+    mostrarApp();
+    oferecerAgendaAntiga();
+    sincronizar();
+    atualizarConta();
+  } else {
+    mostrarPorta();
+  }
 
   if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
     window.addEventListener('load', function () {

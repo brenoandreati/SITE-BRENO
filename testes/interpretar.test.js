@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { interpretar } = require('../app/interpretar.js');
+const { interpretar } = require('../publico/app/interpretar.js');
 
 // Sábado, 10/10/2026, 10:00
 const HOJE = '2026-10-10';

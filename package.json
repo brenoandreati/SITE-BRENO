@@ -2,10 +2,10 @@
   "name": "agenda",
   "version": "1.0.0",
   "private": true,
-  "description": "Agenda pessoal para computador e celular, com lembretes no WhatsApp.",
+  "description": "Agenda para computador e celular, com contas separadas e lembretes no WhatsApp.",
   "scripts": {
-    "test": "node ferramentas/servidor.mjs --conferir && node --test testes/*.test.js",
-    "servidor": "node ferramentas/servidor.mjs",
-    "abrir": "npx http-server -p 8080 -c-1"
+    "test": "node --test \"testes/*.test.*\"",
+    "abrir": "npx wrangler@4.139.0 d1 migrations apply agenda --local && npx wrangler@4.139.0 dev",
+    "publicar": "npx wrangler@4.139.0 d1 migrations apply agenda --remote && npx wrangler@4.139.0 deploy"
   }
 }

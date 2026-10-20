@@ -1,11 +1,10 @@
 # Agenda
 
-Agenda pessoal para usar no computador e no celular. Você escreve o compromisso com o dia
-da semana, do jeito que falaria (“Dentista quinta às 15h”), e ela já marca sozinha.
-Perto do dia, ela manda lembrete no WhatsApp (e por e-mail, se você quiser).
+Agenda para usar no computador e no celular. Cada pessoa cria a própria conta e vê só a
+própria agenda. Você escreve o compromisso com o dia da semana, do jeito que falaria
+(“Dentista quinta às 15h”), e ela já marca sozinha. Perto do dia, manda lembrete no WhatsApp.
 
-É um site estático (HTML, CSS e JS puros, sem build). Instala no celular como app (PWA)
-e funciona sem internet.
+**Endereço:** https://site-breno.brenoandreati.workers.dev
 
 ## O que ela entende
 
@@ -24,69 +23,76 @@ e funciona sem internet.
 | Inglês toda segunda até 15/12 | toda segunda, até 15/12 |
 
 Antes de salvar aparece uma prévia do que ela entendeu. Em “Ajustar detalhes” dá para mudar
-tudo no formulário (dia da semana, horário, repetição, avisos, notas).
+tudo no formulário. Na aba **Buscar** você pergunta por nome ou data: “dentista”, “sexta”,
+“dia 20”, “tenho algo sexta?”.
 
-Na aba **Buscar** você pergunta por nome ou data: “dentista”, “sexta”, “dia 20”, “25/12”,
-“tenho algo sexta?”. O calendário marca com pontinhos os dias que têm compromisso.
+## Contas
 
-## Endereço
+- **Criar conta:** nome, e-mail e senha (pelo menos 8 caracteres). Cada conta tem a sua agenda.
+- **Entrar em outro aparelho:** o mesmo e-mail e senha. O login dura 180 dias e se renova
+  sozinho com o uso.
+- **Esqueci a senha:** o app manda um código de 6 números para o WhatsApp configurado na conta.
+  Quem ainda não configurou o WhatsApp precisa pedir ajuda ao administrador (veja abaixo).
+- **Trocar senha / apagar conta:** em Ajustes. Trocar a senha tira a conta dos outros aparelhos.
+  Apagar a conta apaga também toda a agenda.
+- **Sair:** a agenda some daquele aparelho (continua guardada na conta).
 
-Publicado no Cloudflare (Worker `site-breno`):
-**https://site-breno.brenoandreati.workers.dev**
+### Segurança
 
-Para publicar de novo depois de mudar algo: `npx wrangler deploy`.
+- A senha não sai do aparelho em texto: o app passa ela por PBKDF2 (250 mil rodadas, com o
+  e-mail como sal) e o servidor ainda mistura um sal aleatório por pessoa antes de guardar.
+- O login é um token aleatório; o servidor guarda só o hash dele.
+- Login, cadastro e código de recuperação têm limite de tentativas.
+- O site só roda os próprios scripts (Content-Security-Policy em `publico/_headers`).
 
-## Computador e celular com a mesma agenda + avisos no WhatsApp
+## Avisos no WhatsApp
 
-Sem configurar nada, a agenda já funciona, mas fica só no aparelho onde você anotou.
-Para juntar os aparelhos e receber os avisos, crie o seu servidor gratuito no Google.
-É uma vez só, uns 5 minutos, de preferência pelo computador:
-
-1. No app, vá em **Ajustes → Como criar o servidor** e toque em *copiar o código do servidor*
-   (é o arquivo [`servidor/Codigo.gs`](servidor/Codigo.gs)).
-2. Abra [script.google.com](https://script.google.com/home/projects/create) e crie um **Novo projeto**.
-3. Apague o que estiver lá, cole o código e troque `troque-esta-senha` por uma senha sua. Salve.
-4. Com a função `instalar` escolhida no topo, clique em **Executar** e autorize
-   (*Revisar permissões → sua conta → Avançado → Acessar → Permitir*).
-   Isso cria a planilha “Agenda (dados)” no seu Drive e liga a verificação de 5 em 5 minutos.
-5. **Implantar → Nova implantação → App da Web**, com *Executar como: Eu* e
-   *Quem pode acessar: Qualquer pessoa*. Copie o **URL do app da Web** (termina em `/exec`).
-6. No app, em **Ajustes**, cole o endereço e a senha e toque em **Conectar**.
-   No outro aparelho, faça só este passo.
-
-> Se um dia você trocar o código do servidor, use **Implantar → Gerenciar implantações →
-> lápis → Versão: Nova versão**. Assim o endereço continua o mesmo.
-
-### WhatsApp (CallMeBot)
-
-Os avisos saem pelo [CallMeBot](https://www.callmebot.com/blog/free-api-whatsapp-messages/),
-um serviço gratuito para mandar mensagens para o seu próprio WhatsApp:
+Cada pessoa configura o próprio WhatsApp em **Ajustes**, pelo
+[CallMeBot](https://www.callmebot.com/blog/free-api-whatsapp-messages/) (gratuito):
 
 1. Na página do CallMeBot, salve nos contatos o número que aparece lá.
 2. Mande pelo WhatsApp para esse contato: `I allow callmebot to send me messages`.
-3. Você recebe a sua **apikey**. No app, em **Ajustes → Avisos no WhatsApp**, coloque o seu número
-   com DDD e a apikey, salve e toque em **Mandar teste**.
+3. Coloque o número com DDD e a **apikey** que chegar em Ajustes, salve e toque em **Mandar teste**.
 
 Em cada compromisso você escolhe quando ser avisado (na hora, 15 min, 30 min, 1 h, 2 h,
-1 dia, 2 dias, 1 semana antes). O padrão é **1 dia antes e 1 hora antes**. Compromisso
-sem horário conta a partir das 9h do dia. Também dá para ligar o **resumo do dia**, que manda
-de manhã a lista do que você tem, e mandar os avisos **também por e-mail** como reserva.
+1 dia, 2 dias, 1 semana antes). O padrão é **1 dia antes e 1 hora antes**. Compromisso sem
+horário conta a partir das 9h. Também dá para ligar o **resumo do dia**, de manhã. O servidor
+confere a cada 5 minutos, no fuso horário de cada pessoa.
 
 ## Como funciona por dentro
 
-- `index.html`, `app/` — o app. Guarda a agenda no aparelho (`localStorage`) e, se estiver
-  conectado, sincroniza com o servidor (vale a alteração mais recente de cada compromisso).
-- `app/datas.js` — datas e repetições. É usado no app **e** no servidor.
-- `app/interpretar.js` — entende as frases em português.
-- `servidor/Codigo.gs` — o servidor no Google (Apps Script): guarda na planilha, sincroniza
-  e manda os avisos. Ele leva uma cópia de `app/datas.js`; depois de mudar esse arquivo,
-  rode `npm run servidor` para atualizar a cópia.
-- `sw.js`, `manifest.webmanifest` — modo offline e instalação no celular.
-- `wrangler.jsonc`, `.assetsignore` — publicação no Cloudflare.
+Tudo roda no Cloudflare, no Worker `site-breno`:
 
-## Testes
+- `publico/` — o app (HTML, CSS e JS puros, sem build). Funciona sem internet e instala no
+  celular. Guarda a agenda de cada conta no aparelho e sincroniza: manda o que mudou e
+  recebe o que mudou nos outros aparelhos (vale a alteração mais recente).
+  - `app/datas.js` — datas e repetições (usado também pelo servidor).
+  - `app/interpretar.js` — entende as frases em português.
+- `worker/` — o servidor: contas e login (`api.mjs`, `seguranca.mjs`), configuração dos
+  avisos (`config.mjs`) e os lembretes que rodam a cada 5 minutos (`avisos.mjs`).
+- `migrations/` — as tabelas do banco D1 `agenda`.
+- `wrangler.jsonc` — configuração do Cloudflare (banco, cron de 5 em 5 minutos).
+
+## Administração
+
+Ver quantas contas existem:
 
 ```bash
-npm test        # frases, repetições e o servidor (com uma imitação do Google)
-npm run abrir   # abre em http://localhost:8080
+npx wrangler d1 execute agenda --remote --command "SELECT nome, email, criado FROM usuarios"
+```
+
+Ajudar alguém que esqueceu a senha e não tem WhatsApp configurado: apague a conta dessa
+pessoa e peça para ela criar de novo (a agenda dela se perde, a não ser que ela tenha uma
+cópia de segurança baixada em Ajustes).
+
+```bash
+npx wrangler d1 execute agenda --remote --command "DELETE FROM usuarios WHERE email = 'pessoa@exemplo.com'"
+```
+
+## Rodar e publicar
+
+```bash
+npm test          # frases, repetições e o servidor (com um banco de teste)
+npm run abrir     # roda tudo no computador: http://localhost:8787
+npm run publicar  # aplica as tabelas novas no banco e publica no Cloudflare
 ```

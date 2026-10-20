@@ -31,7 +31,92 @@
     <symbol id="i-seta-dir" viewBox="0 0 24 24"><path d="m9.5 6 6 6-6 6"/></symbol>
     <symbol id="i-fechar" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
     <symbol id="i-nota" viewBox="0 0 24 24"><path d="M5 5h14M5 10h14M5 15h9"/></symbol>
+    <symbol id="i-olho" viewBox="0 0 24 24"><path d="M2.5 12s3.5-6.5 9.5-6.5 9.5 6.5 9.5 6.5-3.5 6.5-9.5 6.5S2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/></symbol>
   </svg>
+
+  <!-- ENTRAR / CRIAR CONTA -->
+  <div class="porta" id="porta" hidden>
+    <div class="porta__caixa">
+      <div class="marca porta__marca">
+        <img src="app/icones/logo.svg" alt="" width="34" height="26">
+        <span>Agenda</span>
+      </div>
+      <h1 class="titulo porta__titulo">Sua agenda, <em>em qualquer aparelho.</em></h1>
+      <p class="porta__texto">Escreva “Dentista quinta às 15h” e pronto: fica marcado no computador e no celular, com lembrete no WhatsApp.</p>
+
+      <div class="porta__abas" role="tablist" aria-label="Entrar ou criar conta">
+        <button type="button" role="tab" id="aba-entrar" aria-controls="form-entrar" aria-selected="true">Entrar</button>
+        <button type="button" role="tab" id="aba-cadastro" aria-controls="form-cadastro" aria-selected="false">Criar conta</button>
+      </div>
+
+      <form class="form porta__form" id="form-entrar" role="tabpanel" aria-labelledby="aba-entrar" novalidate>
+        <div class="campo">
+          <label for="en-email">E-mail</label>
+          <input id="en-email" name="email" type="email" inputmode="email" autocomplete="username" required>
+        </div>
+        <div class="campo">
+          <label for="en-senha">Senha</label>
+          <div class="senha">
+            <input id="en-senha" name="senha" type="password" autocomplete="current-password" required>
+            <button class="senha__ver" type="button" data-ver-senha aria-label="Mostrar senha" aria-pressed="false"><svg><use href="#i-olho"/></svg></button>
+          </div>
+        </div>
+        <p class="mensagem" id="en-msg" role="status"></p>
+        <button class="btn btn--claro btn--largo" type="submit">Entrar</button>
+        <button class="btn btn--texto porta__link" type="button" id="esqueci">Esqueci minha senha</button>
+      </form>
+
+      <form class="form porta__form" id="form-cadastro" role="tabpanel" aria-labelledby="aba-cadastro" novalidate hidden>
+        <div class="campo">
+          <label for="ca-nome">Seu nome</label>
+          <input id="ca-nome" name="nome" type="text" autocomplete="name" maxlength="80" required>
+        </div>
+        <div class="campo">
+          <label for="ca-email">E-mail</label>
+          <input id="ca-email" name="email" type="email" inputmode="email" autocomplete="username" required>
+        </div>
+        <div class="campo">
+          <label for="ca-senha">Crie uma senha</label>
+          <div class="senha">
+            <input id="ca-senha" name="senha" type="password" autocomplete="new-password" minlength="8" required aria-describedby="ca-dica">
+            <button class="senha__ver" type="button" data-ver-senha aria-label="Mostrar senha" aria-pressed="false"><svg><use href="#i-olho"/></svg></button>
+          </div>
+          <span class="dica" id="ca-dica">Pelo menos 8 caracteres.</span>
+        </div>
+        <p class="mensagem" id="ca-msg" role="status"></p>
+        <button class="btn btn--claro btn--largo" type="submit">Criar conta</button>
+        <p class="nota porta__nota">Cada conta tem a sua própria agenda, separada das outras.</p>
+      </form>
+
+      <form class="form porta__form" id="form-recuperar" novalidate hidden>
+        <h2 class="porta__subtitulo">Criar uma senha nova</h2>
+        <p class="cartao__texto">Mandamos um código para o WhatsApp que está configurado na sua conta.</p>
+        <div class="campo">
+          <label for="re-email">E-mail da conta</label>
+          <input id="re-email" name="email" type="email" inputmode="email" autocomplete="username" required>
+        </div>
+        <div id="re-passo2" hidden>
+          <div class="campo">
+            <label for="re-codigo">Código que chegou no WhatsApp</label>
+            <input id="re-codigo" name="codigo" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*">
+          </div>
+          <div class="campo">
+            <label for="re-senha">Senha nova</label>
+            <div class="senha">
+              <input id="re-senha" name="senha" type="password" autocomplete="new-password" minlength="8">
+              <button class="senha__ver" type="button" data-ver-senha aria-label="Mostrar senha" aria-pressed="false"><svg><use href="#i-olho"/></svg></button>
+            </div>
+            <span class="dica">Pelo menos 8 caracteres.</span>
+          </div>
+        </div>
+        <p class="mensagem" id="re-msg" role="status"></p>
+        <button class="btn btn--claro btn--largo" type="submit" id="re-botao">Mandar código pelo WhatsApp</button>
+        <button class="btn btn--texto porta__link" type="button" id="re-voltar">Voltar para entrar</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="app" id="app" hidden>
 
   <header class="topo">
     <div class="topo__dentro">
@@ -44,9 +129,9 @@
         <a class="abas__item" href="#buscar" data-aba="buscar"><svg><use href="#i-busca"/></svg><span>Buscar</span></a>
         <a class="abas__item" href="#ajustes" data-aba="ajustes"><svg><use href="#i-ajustes"/></svg><span>Ajustes</span></a>
       </nav>
-      <button class="sinc" id="sinc" type="button" data-estado="local">
+      <button class="sinc" id="sinc" type="button" data-estado="ok">
         <span class="sinc__ponto" aria-hidden="true"></span>
-        <span class="sinc__texto">Só neste aparelho</span>
+        <span class="sinc__texto">Sincronizado</span>
       </button>
     </div>
   </header>
@@ -77,6 +162,7 @@
         <button class="btn btn--texto rapido__form" type="button" data-novo><svg aria-hidden="true"><use href="#i-mais"/></svg>Preencher pelo formulário</button>
       </form>
 
+      <div class="legado" id="legado" hidden></div>
       <div class="lista" id="lista"></div>
       <button class="btn btn--linha mais-dias" id="mais-dias" type="button">Ver mais dias</button>
     </section>
@@ -106,43 +192,45 @@
         <h1 class="titulo" id="titulo-ajustes">Ajustes</h1>
       </header>
 
-      <section class="cartao" aria-labelledby="t-conexao">
-        <h2 id="t-conexao">Computador e celular juntos</h2>
-        <p class="cartao__texto" id="conexao-texto">Hoje a agenda fica só neste aparelho. Conecte ao seu Google para ter a mesma agenda no computador e no celular e receber os avisos no WhatsApp.</p>
-        <form id="form-conexao" class="form" autocomplete="off">
+      <section class="cartao" aria-labelledby="t-conta">
+        <h2 id="t-conta">Sua conta</h2>
+        <p class="cartao__texto" id="conta-texto"></p>
+        <div class="botoes">
+          <button class="btn btn--linha" type="button" id="conta-sair">Sair desta conta</button>
+          <button class="btn btn--linha" type="button" id="conta-senha" aria-expanded="false" aria-controls="form-senha">Trocar senha</button>
+        </div>
+        <form class="form subform" id="form-senha" novalidate hidden>
+          <input type="text" name="usuario" autocomplete="username" hidden>
           <div class="campo">
-            <label for="cx-url">Endereço do servidor (URL do app da Web)</label>
-            <input id="cx-url" name="url" type="url" inputmode="url" placeholder="https://script.google.com/macros/s/…/exec" required>
+            <label for="se-atual">Senha atual</label>
+            <input id="se-atual" name="atual" type="password" autocomplete="current-password" required>
           </div>
           <div class="campo">
-            <label for="cx-senha">Senha</label>
-            <input id="cx-senha" name="senha" type="password" autocomplete="current-password" required>
+            <label for="se-nova">Senha nova</label>
+            <input id="se-nova" name="nova" type="password" autocomplete="new-password" minlength="8" required>
+            <span class="dica">Pelo menos 8 caracteres. Os outros aparelhos vão precisar entrar de novo.</span>
           </div>
-          <p class="mensagem" id="cx-msg" role="status"></p>
-          <div class="botoes">
-            <button class="btn btn--claro" type="submit" id="cx-conectar">Conectar</button>
-            <button class="btn btn--linha" type="button" id="cx-sincronizar" hidden>Sincronizar agora</button>
-            <button class="btn btn--texto" type="button" id="cx-desconectar" hidden>Desconectar este aparelho</button>
-          </div>
+          <p class="mensagem" id="se-msg" role="status"></p>
+          <button class="btn btn--claro" type="submit">Salvar senha nova</button>
         </form>
-        <details class="guia" id="guia-google">
-          <summary>Como criar o servidor (uns 5 minutos, uma vez só)</summary>
-          <ol>
-            <li>Toque em <button type="button" class="link" id="copiar-codigo">copiar o código do servidor</button>. <a href="servidor/Codigo.gs" target="_blank" rel="noopener">Ver o código</a>.</li>
-            <li>Abra <a href="https://script.google.com/home/projects/create" target="_blank" rel="noopener">script.google.com</a> (com a sua conta Google) e crie um <strong>Novo projeto</strong>.</li>
-            <li>Apague o que estiver lá, cole o código e, na linha <code>var SENHA</code>, troque <code>troque-esta-senha</code> por uma senha sua. Salve.</li>
-            <li>No topo, com <code>instalar</code> escolhido, clique em <strong>Executar</strong>. O Google vai pedir permissão: <em>Revisar permissões → sua conta → Avançado → Acessar → Permitir</em>.</li>
-            <li>Clique em <strong>Implantar → Nova implantação</strong>, escolha o tipo <strong>App da Web</strong>, com <em>Executar como: Eu</em> e <em>Quem pode acessar: Qualquer pessoa</em>. Clique em Implantar.</li>
-            <li>Copie o <strong>URL do app da Web</strong> (termina em <code>/exec</code>) e cole aqui em cima com a sua senha.</li>
-            <li>No outro aparelho, abra este mesmo site e faça só o passo 6.</li>
-          </ol>
-          <p class="nota">A agenda fica numa planilha chamada “Agenda (dados)” no seu Google Drive. Só quem tem a senha consegue ler ou mudar.</p>
+        <details class="guia guia--perigo">
+          <summary>Apagar minha conta</summary>
+          <form class="form subform" id="form-apagar" novalidate>
+            <p class="cartao__texto">Apaga a conta e toda a agenda, em todos os aparelhos. Não dá para desfazer. Se quiser, baixe uma cópia antes (lá embaixo).</p>
+            <input type="text" name="usuario" autocomplete="username" hidden>
+            <div class="campo">
+              <label for="ap-senha">Digite a sua senha para confirmar</label>
+              <input id="ap-senha" name="senha" type="password" autocomplete="current-password" required>
+            </div>
+            <p class="mensagem" id="ap-msg" role="status"></p>
+            <button class="btn btn--perigo" type="submit">Apagar conta e agenda</button>
+          </form>
         </details>
       </section>
 
       <section class="cartao" aria-labelledby="t-avisos" id="cartao-avisos">
         <h2 id="t-avisos">Avisos no WhatsApp</h2>
-        <p class="cartao__texto" id="avisos-bloqueio">Conecte ao Google primeiro (acima). É o servidor do Google que manda as mensagens, mesmo com o app fechado.</p>
+        <p class="cartao__texto">Os lembretes chegam no seu WhatsApp mesmo com o app fechado.</p>
         <form id="form-avisos" class="form" autocomplete="off">
           <fieldset class="grupo">
             <legend>WhatsApp</legend>
@@ -161,17 +249,8 @@
                 <li>Mande pelo WhatsApp, para esse contato, a mensagem: <code>I allow callmebot to send me messages</code></li>
                 <li>Você recebe uma resposta com a sua <strong>apikey</strong>. Cole aqui, salve e toque em <em>Mandar teste</em>.</li>
               </ol>
-              <p class="nota">O CallMeBot é um serviço gratuito para uso pessoal. Se um dia ele falhar, os avisos também podem ir por e-mail (abaixo).</p>
+              <p class="nota">O CallMeBot é um serviço gratuito para uso pessoal. A resposta dele pode demorar alguns minutos. Se você mandar “Stop” para ele, os avisos param; para voltar, mande “Resume”.</p>
             </details>
-          </fieldset>
-
-          <fieldset class="grupo">
-            <legend>Também por e-mail</legend>
-            <label class="chave-liga"><input type="checkbox" name="emailAtivo" id="av-email-ativo"><span>Mandar os avisos também por e-mail</span></label>
-            <div class="campo">
-              <label for="av-email">E-mail</label>
-              <input id="av-email" name="email" type="email" inputmode="email" placeholder="voce@gmail.com">
-            </div>
           </fieldset>
 
           <fieldset class="grupo">
@@ -219,6 +298,7 @@
       </section>
     </section>
   </main>
+  </div>
 
   <!-- Formulário do compromisso -->
   <dialog class="folha" id="folha" aria-labelledby="folha-titulo">
