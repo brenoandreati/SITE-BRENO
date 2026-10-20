@@ -1,7 +1,7 @@
 {
-  "name": "Agenda",
-  "short_name": "Agenda",
-  "description": "Sua agenda no computador e no celular, com lembretes no WhatsApp.",
+  "name": "Agenda Arvan",
+  "short_name": "Agenda Arvan",
+  "description": "Agenda Arvan: sua agenda no computador e no celular, com lembretes no WhatsApp.",
   "lang": "pt-BR",
   "start_url": "./#agenda",
   "scope": "./",
@@ -10,11 +10,36 @@
   "background_color": "#02081C",
   "theme_color": "#02081C",
   "icons": [
-    { "src": "app/icones/icone-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "app/icones/icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "app/icones/icone-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "app/icones/icone-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "app/icones/icone-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "app/icones/icone-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ],
   "shortcuts": [
-    { "name": "Buscar", "short_name": "Buscar", "url": "./#buscar", "icons": [{ "src": "app/icones/icone-192.png", "sizes": "192x192" }] }
+    {
+      "name": "Buscar",
+      "short_name": "Buscar",
+      "url": "./#buscar",
+      "icons": [
+        {
+          "src": "app/icones/icone-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
   ]
 }

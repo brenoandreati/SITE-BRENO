@@ -1,4 +1,4 @@
-// Agenda no Cloudflare: /api/* passa por aqui; o resto são os arquivos do app.
+// Agenda Arvan no Cloudflare: /api/* passa por aqui; o resto são os arquivos do app.
 import { tratarApi } from './api.mjs';
 import { rodarAvisos } from './avisos.mjs';
 

@@ -1,10 +1,15 @@
-# Agenda
+# Agenda Arvan
 
 Agenda para usar no computador e no celular. Cada pessoa cria a própria conta e vê só a
 própria agenda. Você escreve o compromisso com o dia da semana, do jeito que falaria
 (“Dentista quinta às 15h”), e ela já marca sozinha. Perto do dia, manda lembrete no WhatsApp.
 
-**Endereço:** https://site-breno.brenoandreati.workers.dev
+**Endereço:** https://agenda-arvan.brenoandreati.workers.dev
+
+O endereço antigo, https://site-breno.brenoandreati.workers.dev, continua funcionando com as
+mesmas contas e mostra um aviso do endereço novo. Ele serve para quem ainda tem compromissos
+guardados no aparelho de antes das contas: é só entrar lá uma vez e tocar em
+“Levar para a minha conta”. Os lembretes saem só do endereço novo.
 
 ## O que ela entende
 
@@ -61,7 +66,7 @@ confere a cada 5 minutos, no fuso horário de cada pessoa.
 
 ## Como funciona por dentro
 
-Tudo roda no Cloudflare, no Worker `site-breno`:
+Tudo roda no Cloudflare, no Worker `agenda-arvan` (e no `site-breno`, o endereço antigo):
 
 - `publico/` — o app (HTML, CSS e JS puros, sem build). Funciona sem internet e instala no
   celular. Guarda a agenda de cada conta no aparelho e sincroniza: manda o que mudou e
@@ -72,6 +77,7 @@ Tudo roda no Cloudflare, no Worker `site-breno`:
   avisos (`config.mjs`) e os lembretes que rodam a cada 5 minutos (`avisos.mjs`).
 - `migrations/` — as tabelas do banco D1 `agenda`.
 - `wrangler.jsonc` — configuração do Cloudflare (banco, cron de 5 em 5 minutos).
+- `wrangler.site-breno.jsonc` — o endereço antigo: mesmo app e mesmo banco, sem cron.
 
 ## Administração
 
@@ -94,5 +100,5 @@ npx wrangler d1 execute agenda --remote --command "DELETE FROM usuarios WHERE em
 ```bash
 npm test          # frases, repetições e o servidor (com um banco de teste)
 npm run abrir     # roda tudo no computador: http://localhost:8787
-npm run publicar  # aplica as tabelas novas no banco e publica no Cloudflare
+npm run publicar  # aplica as tabelas novas no banco e publica no Cloudflare (os dois endereços)
 ```

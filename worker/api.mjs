@@ -224,7 +224,7 @@ async function recuperar(ctx, corpo) {
   ).bind(u.id, await S.hashDoCodigo(u.id, codigo), iso(ctx.agora + MINUTOS_CODIGO * 60000)).run();
   try {
     await enviarWhatsApp(ctx.env, cfg.whatsapp,
-      '🔐 *Agenda*\nSeu código para criar uma senha nova: *' + codigo + '*\nVale por ' + MINUTOS_CODIGO + ' minutos. Se não foi você, ignore esta mensagem.');
+      '🔐 *Agenda Arvan*\nSeu código para criar uma senha nova: *' + codigo + '*\nVale por ' + MINUTOS_CODIGO + ' minutos. Se não foi você, ignore esta mensagem.');
   } catch (err) {
     throw new Falha(502, 'Não consegui mandar o código pelo WhatsApp agora. Tente de novo em alguns minutos.', 'whats');
   }
@@ -353,7 +353,7 @@ async function testar(ctx) {
   const envio = { quando: iso(ctx.agora), whatsapp: 'ok', respostaWhats: '' };
   try {
     envio.respostaWhats = await enviarWhatsApp(ctx.env, cfg.whatsapp,
-      '✅ *Agenda*\nTudo certo, ' + primeiro + '! É por aqui que vão chegar os seus lembretes.');
+      '✅ *Agenda Arvan*\nTudo certo, ' + primeiro + '! É por aqui que vão chegar os seus lembretes.');
   } catch (err) {
     envio.whatsapp = 'erro: ' + err.message;
   }

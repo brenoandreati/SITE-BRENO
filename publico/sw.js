@@ -1,7 +1,7 @@
-// Agenda · funciona sem internet.
+// Agenda Arvan · funciona sem internet.
 // Mostra o que está guardado na hora e busca a versão nova por trás
 // (na próxima vez que abrir, já aparece atualizado).
-const CACHE = 'agenda-v2';
+const CACHE = 'agenda-arvan-v3';
 const ARQUIVOS = [
   './',
   'index.html',

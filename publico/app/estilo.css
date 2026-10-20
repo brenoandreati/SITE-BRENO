@@ -78,6 +78,7 @@ svg {
   font-weight: 800; font-size: 19px; letter-spacing: -.02em;
 }
 .marca img { width: 30px; height: auto; }
+.marca em { font-family: var(--f-serif); font-weight: 500; font-size: 1.1em; letter-spacing: -.01em; color: var(--azul-texto); }
 
 .abas {
   position: fixed; z-index: 30; left: 0; right: 0; bottom: 0;
@@ -446,6 +447,11 @@ body.na-porta { padding-bottom: 0; }
 .porta__caixa { width: 100%; max-width: 420px; }
 .porta__marca { margin-bottom: 40px; }
 .porta__titulo { font-size: clamp(32px, 8.5vw, 46px); }
+.porta__mudou {
+  margin: 0 0 32px; padding: 12px 14px; border-radius: 12px;
+  background: var(--azul-vidro); border: 1px solid rgba(91, 131, 255, .35); font-size: 15px;
+}
+.porta__mudou a { font-weight: 700; overflow-wrap: anywhere; }
 .porta__texto { margin-top: 14px; color: var(--suave); font-size: 16px; text-wrap: pretty; }
 .porta__abas {
   display: grid; grid-template-columns: 1fr 1fr; gap: 4px;

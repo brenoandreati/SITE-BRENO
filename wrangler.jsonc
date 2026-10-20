@@ -1,7 +1,7 @@
-// Publicação no Cloudflare: o app (arquivos estáticos) + o servidor das contas (worker/)
+// Agenda Arvan no Cloudflare: o app (arquivos estáticos) + o servidor das contas (worker/)
 // + o banco D1 "agenda". Para publicar: npm run publicar
 {
-  "name": "site-breno",
+  "name": "agenda-arvan",
   "main": "worker/index.mjs",
   "compatibility_date": "2026-09-20",
   "workers_dev": true,

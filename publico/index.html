@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Agenda</title>
-  <meta name="description" content="Sua agenda no computador e no celular, com lembretes no WhatsApp.">
+  <title>Agenda Arvan</title>
+  <meta name="description" content="Agenda Arvan: sua agenda no computador e no celular, com lembretes no WhatsApp.">
   <meta name="theme-color" content="#02081C">
   <meta name="color-scheme" content="dark">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Agenda">
+  <meta name="apple-mobile-web-app-title" content="Agenda Arvan">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="app/icones/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="app/icones/apple-touch-icon.png">
@@ -37,9 +37,10 @@
   <!-- ENTRAR / CRIAR CONTA -->
   <div class="porta" id="porta" hidden>
     <div class="porta__caixa">
+      <p class="porta__mudou" id="porta-mudou" hidden></p>
       <div class="marca porta__marca">
         <img src="app/icones/logo.svg" alt="" width="34" height="26">
-        <span>Agenda</span>
+        <span>Agenda <em>Arvan</em></span>
       </div>
       <h1 class="titulo porta__titulo">Sua agenda, <em>em qualquer aparelho.</em></h1>
       <p class="porta__texto">Escreva “Dentista quinta às 15h” e pronto: fica marcado no computador e no celular, com lembrete no WhatsApp.</p>
@@ -120,9 +121,9 @@
 
   <header class="topo">
     <div class="topo__dentro">
-      <a class="marca" href="#agenda" aria-label="Agenda, início">
+      <a class="marca" href="#agenda" aria-label="Agenda Arvan, início">
         <img src="app/icones/logo.svg" alt="" width="30" height="23">
-        <span>Agenda</span>
+        <span>Agenda <em>Arvan</em></span>
       </a>
       <nav class="abas" aria-label="Seções">
         <a class="abas__item" href="#agenda" data-aba="agenda"><svg><use href="#i-agenda"/></svg><span>Agenda</span></a>
@@ -162,6 +163,7 @@
         <button class="btn btn--texto rapido__form" type="button" data-novo><svg aria-hidden="true"><use href="#i-mais"/></svg>Preencher pelo formulário</button>
       </form>
 
+      <div class="legado" id="mudou" hidden></div>
       <div class="legado" id="legado" hidden></div>
       <div class="lista" id="lista"></div>
       <button class="btn btn--linha mais-dias" id="mais-dias" type="button">Ver mais dias</button>

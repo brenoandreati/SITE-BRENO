@@ -1,4 +1,4 @@
-/* Agenda · tela
+/* Agenda Arvan · tela
  * Cada pessoa entra com a própria conta (servidor em worker/). A agenda fica
  * guardada neste aparelho, separada por conta, e sincroniza com o servidor:
  * o app manda o que mudou aqui e recebe o que mudou nos outros aparelhos.
@@ -807,13 +807,13 @@
     document.body.classList.add('na-porta');
     trocarPorta('entrar');
     if (aviso) msg('#en-msg', aviso, 'erro');
-    document.title = 'Agenda · Entrar';
+    document.title = 'Agenda Arvan · Entrar';
   }
   function mostrarApp() {
     $('#porta').hidden = true;
     $('#app').hidden = false;
     document.body.classList.remove('na-porta');
-    document.title = 'Agenda';
+    document.title = 'Agenda Arvan';
     irPara(location.hash.slice(1));
     atualizarPrevia();
   }
@@ -959,6 +959,20 @@
     }).then(function () { ocupado(f, false); });
   });
 
+  // O endereço antigo (site-breno) continua funcionando, mas aponta para o novo
+  var ENDERECO_NOVO = 'https://agenda-arvan.brenoandreati.workers.dev';
+  function avisarEnderecoNovo() {
+    if (!/^site-breno\./.test(location.hostname)) return;
+    var link = '<a href="' + ENDERECO_NOVO + '">' + ENDERECO_NOVO.replace('https://', '') + '</a>';
+    var temAntiga = lerEventos(CHAVE_ANTIGA).some(function (e) { return !e.apagado; });
+    $('#porta-mudou').innerHTML = 'A agenda agora se chama <strong>Agenda Arvan</strong> e mudou de endereço: ' + link +
+      '. As contas são as mesmas.' + (temAntiga ? ' Se você tinha compromissos guardados neste aparelho, entre aqui uma vez para levar eles para a sua conta.' : '');
+    $('#porta-mudou').hidden = false;
+    $('#mudou').innerHTML = '<p>A agenda agora se chama <strong>Agenda Arvan</strong> e mudou para ' + link +
+      '. Entre lá com o mesmo e-mail e senha' + (temAntiga ? ', depois de levar para a sua conta os compromissos guardados neste aparelho (logo abaixo).' : '.') + '</p>';
+    $('#mudou').hidden = false;
+  }
+
   // Agenda de antes das contas, guardada só neste aparelho
   function oferecerAgendaAntiga() {
     var antigos = lerEventos(CHAVE_ANTIGA).filter(function (e) { return !e.apagado; });
@@ -994,6 +1008,7 @@
     // Agenda antiga e conexão com o servidor do Google saem deste aparelho
     ['agenda.eventos', 'agenda.conexao', 'agenda.prefs'].forEach(function (k) { gravar(k, null); });
     $('#legado').hidden = true;
+    avisarEnderecoNovo();
   });
 
   // ---------- Ajustes ----------
@@ -1166,7 +1181,7 @@
     var blob = new Blob([JSON.stringify(dados, null, 2)], { type: 'application/json' });
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'agenda-' + hoje() + '.json';
+    a.download = 'agenda-arvan-' + hoje() + '.json';
     document.body.appendChild(a);
     a.click();
     setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
@@ -1273,6 +1288,7 @@
     if (Date.now() - ultimaTentativa > 120000) sincronizar();
   }, 60000);
 
+  avisarEnderecoNovo();
   if (sessao) {
     carregarDaConta();
     mostrarApp();
