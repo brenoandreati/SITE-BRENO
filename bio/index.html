@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Breno Andreati · Videomaker</title>
+  <meta name="description" content="Vídeos que transformam visualizações em clientes. Veja alguns trabalhos e peça seu orçamento pelo WhatsApp.">
+  <meta name="theme-color" content="#02081C">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:title" content="Breno Andreati · Videomaker">
+  <meta property="og:description" content="Vídeos que transformam visualizações em clientes.">
+  <meta property="og:image" content="img/avatar.jpg">
+
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..800&family=Newsreader:ital,opsz,wght@1,6..72,400..600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --fundo: #02081C;
+      --cartao: #0A1230;
+      --linha: rgba(241, 242, 246, .1);
+      --texto: #F1F2F6;
+      --suave: rgba(241, 242, 246, .62);
+      --azul: #0040FF;
+      --azul-claro: #5C82FF;
+      --raio: 18px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      background: var(--fundo);
+      color: var(--texto);
+      font-family: "Archivo", system-ui, sans-serif;
+      line-height: 1.5;
+      min-height: 100svh;
+      -webkit-font-smoothing: antialiased;
+    }
+    body::before {
+      content: "";
+      position: fixed; inset: 0 0 auto 0; height: 420px;
+      background: radial-gradient(60% 100% at 50% 0%, rgba(0, 64, 255, .28), transparent 70%);
+      pointer-events: none;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    .bio {
+      position: relative;
+      max-width: 440px;
+      margin: 0 auto;
+      padding: 48px 16px calc(40px + env(safe-area-inset-bottom));
+      display: flex; flex-direction: column; gap: 28px;
+    }
+
+    /* Perfil */
+    .perfil { text-align: center; display: flex; flex-direction: column; align-items: center; }
+    .perfil__foto {
+      width: 96px; height: 96px; border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 0 0 3px var(--fundo), 0 0 0 5px var(--azul);
+      margin-bottom: 18px;
+    }
+    .perfil__nome {
+      font-size: 22px; font-weight: 800; letter-spacing: .01em;
+      text-transform: uppercase;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .perfil__nome img { width: 22px; height: auto; }
+    .perfil__papel {
+      font-size: 12px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase;
+      color: var(--azul-claro); margin-top: 4px;
+    }
+    .perfil__frase {
+      font-family: "Newsreader", Georgia, serif; font-style: italic;
+      font-size: 22px; line-height: 1.3; margin-top: 16px; max-width: 22ch;
+    }
+    .numeros {
+      display: flex; justify-content: center; gap: 22px;
+      margin-top: 18px; font-size: 13px; color: var(--suave);
+    }
+    .numeros strong { display: block; color: var(--texto); font-size: 17px; font-weight: 700; }
+
+    /* Botões */
+    .btn {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      min-height: 56px; padding: 0 20px;
+      border-radius: 999px;
+      font-weight: 700; font-size: 16px;
+      transition: transform .15s ease, background-color .15s ease;
+    }
+    .btn:active { transform: scale(.98); }
+    .btn svg { width: 20px; height: 20px; flex: none; }
+    .btn--whats { background: var(--azul); color: #fff; box-shadow: 0 10px 30px -10px rgba(0, 64, 255, .8); }
+    .btn--whats:hover { background: #1A53FF; }
+    .btn--linha { border: 1px solid var(--linha); background: rgba(241, 242, 246, .03); }
+    .btn--linha:hover { background: rgba(241, 242, 246, .07); }
+    .acoes { display: flex; flex-direction: column; gap: 10px; }
+    .acoes__nota { text-align: center; font-size: 13px; color: var(--suave); }
+
+    /* Portfólio */
+    .cabeca { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
+    .cabeca h2 { font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--suave); }
+    .cabeca span { font-size: 12px; color: var(--suave); }
+    .trilho {
+      display: grid; grid-auto-flow: column; grid-auto-columns: 42%;
+      gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory;
+      margin: 0 -16px; padding: 0 16px 4px; scroll-padding: 0 16px;
+      scrollbar-width: none;
+    }
+    .trilho::-webkit-scrollbar { display: none; }
+    .reel {
+      position: relative; aspect-ratio: 4 / 5; border-radius: 14px; overflow: hidden;
+      background: var(--cartao); scroll-snap-align: start;
+      border: 0; padding: 0; cursor: pointer; color: inherit; font: inherit; text-align: left;
+    }
+    .reel img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+    .reel:hover img { transform: scale(1.04); }
+    .reel::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(2, 8, 28, .85), transparent 55%);
+    }
+    .reel__play {
+      position: absolute; top: 10px; right: 10px; z-index: 1;
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(2, 8, 28, .55); backdrop-filter: blur(6px);
+      display: grid; place-items: center;
+    }
+    .reel__play svg { width: 11px; height: 11px; margin-left: 2px; }
+    .reel__txt { position: absolute; left: 12px; right: 12px; bottom: 10px; z-index: 1; }
+    .reel__txt small { display: block; font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--azul-claro); }
+    .reel__txt strong { font-size: 14px; font-weight: 700; line-height: 1.2; }
+
+    /* Rodapé */
+    .rodape { text-align: center; font-size: 12px; color: var(--suave); }
+
+    /* Botão fixo */
+    .fixo {
+      position: fixed; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom));
+      width: min(408px, calc(100% - 32px));
+      transform: translate(-50%, 140%); transition: transform .3s ease;
+      z-index: 5;
+    }
+    .fixo.visivel { transform: translate(-50%, 0); }
+
+    /* Player */
+    .player {
+      position: fixed; inset: 0; z-index: 10;
+      background: rgba(2, 8, 28, .94);
+      display: none; align-items: center; justify-content: center; padding: 16px;
+    }
+    .player.aberto { display: flex; }
+    .player video { max-height: 86svh; max-width: 100%; aspect-ratio: 9 / 16; border-radius: 16px; background: #000; }
+    .player__fechar {
+      position: absolute; top: calc(12px + env(safe-area-inset-top)); right: 12px;
+      width: 44px; height: 44px; border-radius: 50%; border: 0;
+      background: rgba(241, 242, 246, .12); color: var(--texto); font-size: 20px; cursor: pointer;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="bio">
+
+    <!-- Quem é -->
+    <header class="perfil">
+      <img class="perfil__foto" src="img/avatar.jpg" alt="Breno Andreati" width="96" height="96">
+      <h1 class="perfil__nome"><img src="../assets/logo.svg" alt="" width="22" height="17">Breno Andreati</h1>
+      <p class="perfil__papel">Videomaker estratégico</p>
+      <p class="perfil__frase">Vídeos que transformam visualizações em clientes.</p>
+      <div class="numeros">
+        <p><strong>200+</strong>vídeos</p>
+        <p><strong>45+</strong>empresas</p>
+        <p><strong>8M+</strong>views</p>
+      </div>
+    </header>
+
+    <!-- Contato principal -->
+    <div class="acoes" id="acoes">
+      <a class="btn btn--whats" data-wa href="#">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8 0-1.3.7-2 1-2.3.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.4.6-.3.4c-.1.1-.3.3-.1.6.2.3.7 1.2 1.6 2 1.1 1 2 1.3 2.3 1.4.3.1.4.1.6-.1l.8-1c.2-.3.4-.2.6-.1l2 1c.2.1.4.2.4.3.1.1.1.6-.2 1.3Z"/></svg>
+        Pedir orçamento no WhatsApp
+      </a>
+      <p class="acoes__nota">Resposta no mesmo dia · sem compromisso</p>
+    </div>
+
+    <!-- Portfólio -->
+    <section aria-labelledby="t-port">
+      <div class="cabeca">
+        <h2 id="t-port">Alguns trabalhos</h2>
+        <span>arraste →</span>
+      </div>
+      <div class="trilho">
+        <button class="reel" data-video="videos/supermercado.mp4">
+          <img src="img/supermercado.jpg" alt="" loading="lazy" width="540" height="675">
+          <span class="reel__play"><svg viewBox="0 0 10 12" fill="#fff"><path d="M0 0l10 6-10 6z"/></svg></span>
+          <span class="reel__txt"><small>Promoção</small><strong>Supermercado</strong></span>
+        </button>
+        <button class="reel" data-video="videos/loja-salgados.mp4">
+          <img src="img/loja-salgados.jpg" alt="" loading="lazy" width="540" height="675">
+          <span class="reel__play"><svg viewBox="0 0 10 12" fill="#fff"><path d="M0 0l10 6-10 6z"/></svg></span>
+          <span class="reel__txt"><small>Produção local</small><strong>Loja de salgados</strong></span>
+        </button>
+        <button class="reel" data-video="videos/negocio-local.mp4">
+          <img src="img/negocio-local.jpg" alt="" loading="lazy" width="540" height="675">
+          <span class="reel__play"><svg viewBox="0 0 10 12" fill="#fff"><path d="M0 0l10 6-10 6z"/></svg></span>
+          <span class="reel__txt"><small>Reels</small><strong>Negócio local</strong></span>
+        </button>
+        <button class="reel" data-video="videos/aniversario-infantil.mp4">
+          <img src="img/aniversario-infantil.jpg" alt="" loading="lazy" width="540" height="675">
+          <span class="reel__play"><svg viewBox="0 0 10 12" fill="#fff"><path d="M0 0l10 6-10 6z"/></svg></span>
+          <span class="reel__txt"><small>Evento</small><strong>Aniversário infantil</strong></span>
+        </button>
+        <button class="reel" data-video="videos/making-of.mp4">
+          <img src="img/making-of.jpg" alt="" loading="lazy" width="540" height="675">
+          <span class="reel__play"><svg viewBox="0 0 10 12" fill="#fff"><path d="M0 0l10 6-10 6z"/></svg></span>
+          <span class="reel__txt"><small>Bastidores</small><strong>Making of</strong></span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Links -->
+    <div class="acoes" id="acoes-fim">
+      <a class="btn btn--linha" data-insta href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none"/></svg>
+        Mais trabalhos no Instagram
+      </a>
+      <a class="btn btn--whats" data-wa href="#">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8 0-1.3.7-2 1-2.3.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.4.6-.3.4c-.1.1-.3.3-.1.6.2.3.7 1.2 1.6 2 1.1 1 2 1.3 2.3 1.4.3.1.4.1.6-.1l.8-1c.2-.3.4-.2.6-.1l2 1c.2.1.4.2.4.3.1.1.1.6-.2 1.3Z"/></svg>
+        Gostei, quero conversar
+      </a>
+    </div>
+
+    <footer class="rodape">© <span data-ano>2026</span> Breno Andreati</footer>
+  </main>
+
+  <!-- Botão que acompanha a rolagem -->
+  <a class="btn btn--whats fixo" data-wa href="#" aria-hidden="true" tabindex="-1">Pedir orçamento no WhatsApp</a>
+
+  <!-- Player dos vídeos -->
+  <div class="player" id="player" role="dialog" aria-modal="true" aria-label="Vídeo do portfólio">
+    <button class="player__fechar" id="fechar" aria-label="Fechar vídeo">✕</button>
+    <video id="video" controls playsinline></video>
+  </div>
+
+  <script>
+    // ============ Edite aqui ============
+    const CONFIG = {
+      whatsapp: '5527999715520',
+      mensagem: 'Olá, Breno! Vi seus trabalhos e quero um orçamento para vídeos.',
+      instagram: 'brenoandreati',
+    };
+
+    const wa = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(CONFIG.mensagem)}`;
+    document.querySelectorAll('[data-wa]').forEach((a) => { a.href = wa; a.target = '_blank'; a.rel = 'noopener'; });
+    document.querySelectorAll('[data-insta]').forEach((a) => {
+      a.href = `https://instagram.com/${CONFIG.instagram}`; a.target = '_blank'; a.rel = 'noopener';
+    });
+    document.querySelectorAll('[data-ano]').forEach((el) => { el.textContent = new Date().getFullYear(); });
+
+    // Botão fixo aparece quando o botão principal sai da tela
+    // e some de novo quando os botões do fim da página aparecem
+    const fixo = document.querySelector('.fixo');
+    const topo = document.getElementById('acoes');
+    const fim = document.getElementById('acoes-fim');
+    const estado = { topoPassou: false, fimVisivel: false };
+    new IntersectionObserver((entradas) => {
+      entradas.forEach((e) => {
+        if (e.target === topo) estado.topoPassou = !e.isIntersecting && e.boundingClientRect.top < 0;
+        if (e.target === fim) estado.fimVisivel = e.isIntersecting;
+      });
+      const mostrar = estado.topoPassou && !estado.fimVisivel;
+      fixo.classList.toggle('visivel', mostrar);
+      fixo.toggleAttribute('aria-hidden', !mostrar);
+      fixo.tabIndex = mostrar ? 0 : -1;
+    }).observe(topo);
+    new IntersectionObserver(([e]) => {
+      estado.fimVisivel = e.isIntersecting;
+      const mostrar = estado.topoPassou && !estado.fimVisivel;
+      fixo.classList.toggle('visivel', mostrar);
+      fixo.toggleAttribute('aria-hidden', !mostrar);
+      fixo.tabIndex = mostrar ? 0 : -1;
+    }).observe(fim);
+
+    // Player
+    const player = document.getElementById('player');
+    const video = document.getElementById('video');
+    let origem = null;
+    function fechar() {
+      video.pause(); video.removeAttribute('src'); video.load();
+      player.classList.remove('aberto');
+      if (origem) origem.focus();
+    }
+    document.querySelectorAll('.reel').forEach((b) => b.addEventListener('click', () => {
+      origem = b;
+      video.src = b.dataset.video;
+      video.poster = b.querySelector('img').src;
+      player.classList.add('aberto');
+      video.play().catch(() => {});
+      document.getElementById('fechar').focus();
+    }));
+    document.getElementById('fechar').addEventListener('click', fechar);
+    player.addEventListener('click', (e) => { if (e.target === player) fechar(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && player.classList.contains('aberto')) fechar(); });
+  </script>
+</body>
+</html>
